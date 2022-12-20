@@ -97,4 +97,9 @@ public class HttpRequest
 
         return bld.ToString();
     }
+    
+    public string[] GetPathSegments()
+    {
+        return Path.Split("/");
+    }
 }

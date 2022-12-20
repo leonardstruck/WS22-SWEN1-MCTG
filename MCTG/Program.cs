@@ -1,3 +1,9 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using System.Net;
+using HttpServer;
 
-Console.WriteLine("Hello, World!");
+Listener listener = new(IPAddress.Loopback, 10001);
+
+var endpoints = EndpointResolver.FindEndpointControllers();
+listener.RegisterEndpoint(endpoints);
+
+listener.Start();
