@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpServer", "HttpServer\Ht
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpController", "HttpController\HttpController.csproj", "{D1324A4D-CC59-4C03-8190-9E7274A4BCB1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{DA42A2D8-B84D-422F-A983-AA28FB3FF35B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{D1324A4D-CC59-4C03-8190-9E7274A4BCB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1324A4D-CC59-4C03-8190-9E7274A4BCB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1324A4D-CC59-4C03-8190-9E7274A4BCB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA42A2D8-B84D-422F-A983-AA28FB3FF35B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA42A2D8-B84D-422F-A983-AA28FB3FF35B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA42A2D8-B84D-422F-A983-AA28FB3FF35B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA42A2D8-B84D-422F-A983-AA28FB3FF35B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

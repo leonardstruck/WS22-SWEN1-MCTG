@@ -40,3 +40,12 @@ public class MiddlewareResult
         additionalData = data;
     }
 }
+
+public class MiddlewareKeyAttribute : Attribute
+{
+    public string Key;
+    public MiddlewareKeyAttribute(string key)
+    {
+        Key = key;
+    }
+}

@@ -1,5 +1,4 @@
 using System.Reflection;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace HttpServer;
 
