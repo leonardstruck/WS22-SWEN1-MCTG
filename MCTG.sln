@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCTG", "MCTG\MCTG.csproj", "{4118F6F6-B1A3-4C51-9192-E44463558537}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpServer", "HttpServer\HttpServer.csproj", "{5B48A89A-4AFC-414D-8B8D-3E1F32CD336B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4118F6F6-B1A3-4C51-9192-E44463558537}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4118F6F6-B1A3-4C51-9192-E44463558537}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4118F6F6-B1A3-4C51-9192-E44463558537}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4118F6F6-B1A3-4C51-9192-E44463558537}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B48A89A-4AFC-414D-8B8D-3E1F32CD336B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B48A89A-4AFC-414D-8B8D-3E1F32CD336B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B48A89A-4AFC-414D-8B8D-3E1F32CD336B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B48A89A-4AFC-414D-8B8D-3E1F32CD336B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
