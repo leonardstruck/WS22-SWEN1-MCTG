@@ -22,6 +22,10 @@ public class MustBeAdmin : IMiddleware
             ctx.Response.StatusMessage = "Forbidden";
             ctx.Response.Json(new {status = "error", message = "You are not allowed to access this resource"});
         }
+        else
+        {
+            throw new Exception("User not found in context. Run Auth middleware first");
+        }
         return Task.FromResult(ctx);
     }
 }

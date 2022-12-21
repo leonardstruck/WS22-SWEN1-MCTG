@@ -3,8 +3,8 @@ using HttpServer;
 
 namespace HttpController.Middleware.Authentication;
 
-[HttpMiddleware("Auth_Verify")]
-public class Verify : IMiddleware
+[HttpMiddleware("Auth")]
+public class Auth : IMiddleware
 {
     public async Task<HttpContext> HandleRequest(HttpContext ctx)
     {
