@@ -3,11 +3,11 @@ using HttpMethod = HttpServer.HttpMethod;
 
 namespace HttpController.Packages;
 
-[HttpEndpoint("/packages", HttpMethod.POST, "Auth_ValidToken")]
+[HttpEndpoint("/packages", HttpMethod.POST, "Auth_Verify", "Auth_MustBeAdmin")]
 public class CreatePackage : IEndpointController
 {
-    public Task<HttpContext> HandleRequest(HttpContext ctx)
+    public async Task<HttpContext> HandleRequest(HttpContext ctx)
     {
-        throw new NotImplementedException();
+        return ctx;
     }
 }

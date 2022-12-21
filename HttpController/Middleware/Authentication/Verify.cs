@@ -3,8 +3,8 @@ using HttpServer;
 
 namespace HttpController.Middleware.Authentication;
 
-[HttpMiddleware("Auth_ValidToken")]
-public class ValidToken : IMiddleware
+[HttpMiddleware("Auth_Verify")]
+public class Verify : IMiddleware
 {
     public async Task<HttpContext> HandleRequest(HttpContext ctx)
     {
@@ -22,7 +22,11 @@ public class ValidToken : IMiddleware
                 ctx.Response.Status = 401;
                 ctx.Response.StatusMessage = "Unauthorized";
                 ctx.Response.Json(new { status = "error", message = "Invalid token" });
+                return ctx;
             }
+            
+            // set the user in the context
+            ctx.Data["user"] = user;
         } else {
             ctx.Abort = true;
             ctx.Response.Status = 401;
