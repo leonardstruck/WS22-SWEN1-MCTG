@@ -9,8 +9,8 @@ public class MiddlewareResult
 {
     public HttpRequest Request;
     public HttpResponse Response;
-    public bool Abort = false;
-    public object? additionalData = null;
+    public bool Abort;
+    public object? AdditionalData;
     
     public MiddlewareResult(HttpRequest req, HttpResponse res)
     {
@@ -30,14 +30,14 @@ public class MiddlewareResult
         Request = req;
         Response = res;
         Abort = abort;
-        additionalData = data;
+        AdditionalData = data;
     }
     
     public MiddlewareResult(HttpRequest req, HttpResponse res, object? data)
     {
         Request = req;
         Response = res;
-        additionalData = data;
+        AdditionalData = data;
     }
 }
 

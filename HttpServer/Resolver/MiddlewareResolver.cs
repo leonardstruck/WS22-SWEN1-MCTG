@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace HttpServer;
+namespace HttpServer.Resolver;
 
 public static class MiddlewareResolver
 {

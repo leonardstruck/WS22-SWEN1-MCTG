@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using HttpServer;
+using HttpServer.Resolver;
 
 Listener listener = new(IPAddress.Loopback, 10001);
 

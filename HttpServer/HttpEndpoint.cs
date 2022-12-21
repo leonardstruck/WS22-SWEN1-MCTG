@@ -1,6 +1,6 @@
 namespace HttpServer;
 
-public class HttpEndpointAttribute : System.Attribute
+public class HttpEndpointAttribute : Attribute
 {
     public string Path { get; }
     public HttpMethod Method { get; }
