@@ -93,7 +93,9 @@ public class UserRepository
     
     public static async Task<User?> GetUserByToken(string token)
     {
-        var cmd = Db.CreateCommand("SELECT id, username, password, coins, name, bio, image FROM \"user\" WHERE id = (SELECT user_id FROM session WHERE token = @token LIMIT 1) LIMIT 1");
+        var cmd = Db.CreateCommand(
+            "SELECT id, username, password, coins, name, bio, image FROM \"user\" " +
+            "WHERE id = (SELECT user_id FROM session WHERE token = @token AND expires > now() LIMIT 1) LIMIT 1");
         cmd.Parameters.AddWithValue("token", token);
         
         var reader = await cmd.ExecuteReaderAsync();
