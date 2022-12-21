@@ -5,24 +5,25 @@ using HttpMethod = HttpServer.HttpMethod;
 
 namespace HttpController.Users;
 
-[HttpEndpoint("/users", HttpMethod.POST, "BodyNotNull", "ValidateSchema_Credentials")]
+[HttpEndpoint("/users", HttpMethod.POST, "BodyNotNull", "SchemaValidation_Credentials")]
 public class RegisterUser : IEndpointController
 {
-    public async Task HandleRequest(HttpRequest req, HttpResponse res)
+    public async Task<HttpContext> HandleRequest(HttpContext ctx)
     {
-        var credentials = req.DeserializeBody<Credentials>();
+        var credentials = ctx.Request.DeserializeBody<Credentials>();
 
         var user = await UserRepository.RegisterUser(credentials);
         
         if(user == null)
         {
-            res.Status = 409;
-            res.StatusMessage = "Conflict";
-            res.Json(new {status = "error", message = "User already exists"});
-            return;
+            ctx.Response.Status = 409;
+            ctx.Response.StatusMessage = "Conflict";
+            ctx.Response.Json(new {status = "error", message = "User already exists"});
+            return ctx;
         }
         
-        res.Status = 201;
-        res.Json(new {status = "ok", message = "User created", data = user});
+        ctx.Response.Status = 201;
+        ctx.Response.Json(new {status = "ok", message = "User created", data = user});
+        return ctx;
     }
 }

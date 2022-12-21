@@ -90,4 +90,26 @@ public class UserRepository
 
         return token;
     }
+    
+    public static async Task<User?> GetUserByToken(string token)
+    {
+        var cmd = Db.CreateCommand("SELECT id, username, password, coins, name, bio, image FROM \"user\" WHERE id = (SELECT user_id FROM session WHERE token = @token LIMIT 1) LIMIT 1");
+        cmd.Parameters.AddWithValue("token", token);
+        
+        var reader = await cmd.ExecuteReaderAsync();
+        if (!reader.HasRows)
+            return null;
+        
+        await reader.ReadAsync();
+        
+        return new User(reader["username"].ToString()!)
+        {
+            Id = reader["id"].ToString(),
+            Username = reader["username"].ToString()!,
+            
+            Bio = reader["bio"].ToString(),
+            Image = reader["image"].ToString(),
+            Coins = int.Parse(reader["coins"].ToString()!),
+        };
+    }
 }

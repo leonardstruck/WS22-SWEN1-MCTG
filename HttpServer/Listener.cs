@@ -97,7 +97,7 @@ public class Listener
         } finally { _httpServer.Stop(); }
     }
 
-    private void HandleClientCommunication(object? threadObject)
+    private async void HandleClientCommunication(object? threadObject)
     {
         if (threadObject == null)
         {
@@ -109,14 +109,13 @@ public class Listener
         Console.WriteLine($"Accepted Client from {clientSocket.Client.RemoteEndPoint}");
         try
         {
-            HttpRequest request = HttpRequest.CreateInstance(clientSocket.GetStream());
-            HttpResponse response = new(clientSocket.GetStream());
+            HttpContext ctx = new HttpContext(HttpRequest.CreateInstance(clientSocket.GetStream()), new HttpResponse(clientSocket.GetStream()));
 
             // Split Path
-            var pathSplit = request.Path.Split("/");
+            var pathSplit = ctx.Request.Path.Split("/");
 
             // Build Key (check if path has multiple forward slashes and replace with wildcard *)
-            var key = request.Method + "%%/" + pathSplit[1] +
+            var key = ctx.Request.Method + "%%/" + pathSplit[1] +
                       (pathSplit.Length > 2 && pathSplit[2].Length > 0 ? "/*" : "");
             
             // strip query params from key
@@ -127,7 +126,7 @@ public class Listener
 
             if (_endpoints.ContainsKey(key))
             {
-                Console.WriteLine($"{clientSocket.Client.RemoteEndPoint} - REQ - {request.Method} {request.Path}");
+                Console.WriteLine($"{clientSocket.Client.RemoteEndPoint} - REQ - {ctx.Request.Method} {ctx.Request.Path}");
                 try
                 {
                     // Run Middlewares
@@ -135,18 +134,14 @@ public class Listener
                     {
                         if (_middlewares.ContainsKey(middlewareKey))
                         {
-                            var middlewareResult = _middlewares[middlewareKey].HandleRequest(request, response);
-                            // If middleware cancels request, stop processing
-                            if (middlewareResult.Abort)
+                            ctx = await _middlewares[middlewareKey].HandleRequest(ctx);
+                           
+                            if (ctx.Abort)
                             {
-                                Console.WriteLine($"{clientSocket.Client.RemoteEndPoint} - RES - {response.Status}");
-                                response.Send();
+                                Console.WriteLine($"{clientSocket.Client.RemoteEndPoint} - RES - {ctx.Response.Status}");
+                                ctx.Response.Send();
                                 return;
                             }
-
-                            
-                            response = middlewareResult.Response;
-                            request = middlewareResult.Request;
                         }
                         else
                         {
@@ -155,27 +150,26 @@ public class Listener
                     }
                     
                     // Run Request with EndpointController
-                    var task = _endpoints[key].Controller.HandleRequest(request, response);
-                    task.Wait();
+                    ctx = await _endpoints[key].Controller.HandleRequest(ctx);
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("Error while handling request: " + e.Message);
-                    response.Status = 500;
-                    response.StatusMessage = "Internal Server Error";
+                    ctx.Response.Status = 500;
+                    ctx.Response.StatusMessage = "Internal Server Error";
                 }
             }
             else
             {
                 Console.WriteLine(
-                    $"{clientSocket.Client.RemoteEndPoint} - ERR - Request to unknown resource: {request.Method} {request.Path}");
-                response.Status = 404;
-                response.StatusMessage = "Not Found";
-                response.Body = "The requested resource could not be found";
+                    $"{clientSocket.Client.RemoteEndPoint} - ERR - Request to unknown resource: {ctx.Request.Method} {ctx.Request.Path}");
+                ctx.Response.Status = 404;
+                ctx.Response.StatusMessage = "Not Found";
+                ctx.Response.Body = "The requested resource could not be found";
             }
 
-            Console.WriteLine($"{clientSocket.Client.RemoteEndPoint} - RES - {response.Status}");
-            response.Send();
+            Console.WriteLine($"{clientSocket.Client.RemoteEndPoint} - RES - {ctx.Response.Status}");
+            ctx.Response.Send();
         }
         catch (SocketException socketException)
         {

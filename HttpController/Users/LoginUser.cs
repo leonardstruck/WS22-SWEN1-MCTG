@@ -5,24 +5,25 @@ using HttpMethod = HttpServer.HttpMethod;
 
 namespace HttpController.Users;
 
-[HttpEndpoint("/sessions", HttpMethod.POST, "BodyNotNull", "ValidateSchema_Credentials")]
+[HttpEndpoint("/sessions", HttpMethod.POST, "BodyNotNull", "SchemaValidation_Credentials")]
 public class LoginUser : IEndpointController
 {
-    public async Task HandleRequest(HttpRequest req, HttpResponse res)
+    public async Task<HttpContext> HandleRequest(HttpContext ctx)
     {
-        var credentials = req.DeserializeBody<Credentials>();
+        var credentials = ctx.Request.DeserializeBody<Credentials>();
 
         var token = await UserRepository.LoginUser(credentials);
         
         if(token == null)
         {
-            res.Status = 401;
-            res.StatusMessage = "Unauthorized";
+            ctx.Response.Status = 401;
+            ctx.Response.StatusMessage = "Unauthorized";
             
-            res.Json(new {status = "error", message = "Invalid credentials"});
-            return;
+            ctx.Response.Json(new {status = "error", message = "Invalid credentials"});
+            return ctx;
         }
         
-        res.Json(new {status = "ok", data = new {token}});
+        ctx.Response.Json(new {status = "ok", data = new {token}});
+        return ctx;
     }
 }

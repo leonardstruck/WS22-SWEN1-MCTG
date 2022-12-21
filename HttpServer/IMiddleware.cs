@@ -2,43 +2,7 @@ namespace HttpServer;
 
 public interface IMiddleware
 {
-    public MiddlewareResult HandleRequest(HttpRequest req, HttpResponse res);
-}
-
-public class MiddlewareResult
-{
-    public HttpRequest Request;
-    public HttpResponse Response;
-    public bool Abort;
-    public object? AdditionalData;
-    
-    public MiddlewareResult(HttpRequest req, HttpResponse res)
-    {
-        Request = req;
-        Response = res;
-    }
-    
-    public MiddlewareResult(HttpRequest req, HttpResponse res, bool abort)
-    {
-        Request = req;
-        Response = res;
-        Abort = abort;
-    }
-    
-    public MiddlewareResult(HttpRequest req, HttpResponse res, bool abort, object? data)
-    {
-        Request = req;
-        Response = res;
-        Abort = abort;
-        AdditionalData = data;
-    }
-    
-    public MiddlewareResult(HttpRequest req, HttpResponse res, object? data)
-    {
-        Request = req;
-        Response = res;
-        AdditionalData = data;
-    }
+    public Task<HttpContext> HandleRequest(HttpContext ctx);
 }
 
 public class HttpMiddlewareAttribute : Attribute

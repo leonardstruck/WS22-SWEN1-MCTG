@@ -5,21 +5,17 @@ namespace HttpController.Middleware;
 [HttpMiddleware("BodyNotNull")]
 public class BodyNotNull : IMiddleware
 {
-    public MiddlewareResult HandleRequest(HttpRequest req, HttpResponse res)
+    public Task<HttpContext> HandleRequest(HttpContext ctx)
     {
         // This middleware checks if the request body is null or empty
-        if (string.IsNullOrEmpty(req.Body))
-        {
-            res.Status = 400;
-            res.StatusMessage = "Bad Request";
+        if (!string.IsNullOrEmpty(ctx.Request.Body)) return Task.FromResult(ctx);
+        
+        ctx.Response.Status = 400;
+        ctx.Response.StatusMessage = "Bad Request";
             
-            res.Json(new { status = "error", error = "Request body is empty" });
+        ctx.Response.Json(new { status = "error", error = "Request body is empty" });
+        ctx.Abort = true;
 
-            return new MiddlewareResult(req, res, true);
-        }
-        else
-        {
-            return new MiddlewareResult(req, res);
-        }
+        return Task.FromResult(ctx);
     }
 }

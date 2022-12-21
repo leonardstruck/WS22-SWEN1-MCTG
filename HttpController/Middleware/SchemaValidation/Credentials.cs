@@ -2,20 +2,23 @@ using HttpServer;
 using Models;
 namespace HttpController.Middleware.SchemaValidation;
 
-[HttpMiddleware("ValidateSchema_Credentials")]
+[HttpMiddleware("SchemaValidation_Credentials")]
 public class SchemaValidationCredentials : IMiddleware
 {
-    public MiddlewareResult HandleRequest(HttpRequest req, HttpResponse res)
+    public Task<HttpContext> HandleRequest(HttpContext ctx)
     {
-        var cred = req.DeserializeBody<Credentials>();
+        var cred = ctx.Request.DeserializeBody<Credentials>();
+        
         var isValid = !(string.IsNullOrEmpty(cred.Username) || string.IsNullOrEmpty(cred.Password));
 
 
-        if (isValid) return new MiddlewareResult(req, res);
-        
-        res.Status = 400;
-        res.Json(new {status="error", message="Bad request. Please provide Username and Password."});
+        if (!isValid)
+        {
+            ctx.Abort = true;
+            ctx.Response.Status = 400;
+            ctx.Response.Json(new {status="error", message="Bad request. Please provide Username and Password."});
+        }
 
-        return new MiddlewareResult(req, res, !isValid);
+        return Task.FromResult(ctx);
     }
 }
