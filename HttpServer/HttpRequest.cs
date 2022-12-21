@@ -1,5 +1,6 @@
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json;
 
 namespace HttpServer;
 
@@ -13,6 +14,18 @@ public class HttpRequest
     public Dictionary<string, string?> Params;
 
     public string? Body { get; private set; }
+    
+    public T DeserializeBody<T>()
+    {
+        if (Body == null)
+            throw new ArgumentException("Body is null");
+        
+        var deserialized = JsonSerializer.Deserialize<T>(Body);
+        if(deserialized == null)
+            throw new ArgumentException("Body is not in the correct format");
+        
+        return deserialized;
+    }
 
     private HttpRequest(string method, string path, string protocolVersion, Dictionary<string, string> headers, Dictionary<string, string?> queryParams, string? body)
     {

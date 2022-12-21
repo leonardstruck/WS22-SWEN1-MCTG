@@ -41,10 +41,10 @@ public class MiddlewareResult
     }
 }
 
-public class MiddlewareKeyAttribute : Attribute
+public class HttpMiddlewareAttribute : Attribute
 {
     public string Key;
-    public MiddlewareKeyAttribute(string key)
+    public HttpMiddlewareAttribute(string key)
     {
         Key = key;
     }
