@@ -1,5 +1,7 @@
+using System.Security.Cryptography;
 using Models;
 using Npgsql;
+using NpgsqlTypes;
 
 namespace DataLayer;
 
@@ -56,5 +58,36 @@ public class UserRepository
             Image = reader["image"].ToString(),
             Coins = int.Parse(reader["coins"].ToString()!),
         };
+    }
+    
+    public static async Task<string?> LoginUser(Credentials credentials)
+    {
+        var hashCmd = Db.CreateCommand("SELECT id, password FROM \"user\" WHERE username = @username LIMIT 1");
+        hashCmd.Parameters.AddWithValue("username", credentials.Username);
+        
+        var hashReader = await hashCmd.ExecuteReaderAsync();
+        if (!hashReader.HasRows)
+            return null;
+        
+        await hashReader.ReadAsync();
+        
+        var passwordHash = hashReader["password"].ToString()!;
+        var userId = hashReader["id"].ToString()!;
+        
+        if (!BCrypt.Net.BCrypt.Verify(credentials.Password, passwordHash))
+            return null;
+        
+        // Generate bearer token
+        var bytes = RandomNumberGenerator.GetBytes(32);
+        var token = Convert.ToBase64String(bytes);
+        
+        // Store token in database
+        var tokenCmd = Db.CreateCommand("INSERT INTO session (token, user_id) VALUES (@token, @user_id)");
+        tokenCmd.Parameters.AddWithValue("token", token);
+        tokenCmd.Parameters.AddWithValue("user_id", NpgsqlDbType.Uuid, Guid.Parse(userId));
+        
+        await tokenCmd.ExecuteNonQueryAsync();
+
+        return token;
     }
 }

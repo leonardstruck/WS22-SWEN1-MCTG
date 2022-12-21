@@ -2,11 +2,14 @@ drop table if exists card;
 
 drop table if exists package;
 
+drop table if exists "session";
+
 drop table if exists "user";
+
 
 create table "user"
 (
-    id       serial
+    id       uuid default gen_random_uuid() not null
         constraint user_pk
             primary key,
     username varchar,
@@ -19,29 +22,41 @@ create table "user"
 
 create table package
 (
-    id          serial
+    id          uuid default gen_random_uuid() not null
         constraint package_pk
             primary key,
-    acquired_by integer
+    acquired_by uuid
         constraint package_user_fk
             references "user"
 );
 
 create table card
 (
-    id         uuid                  not null
+    id         uuid    default gen_random_uuid() not null
         constraint card_pk
             primary key,
-    package_id integer               not null
+    package_id uuid                              not null
         constraint card_package_fk
             references package,
     name       varchar,
     damage     numeric,
-    owner_id   integer
+    owner_id   uuid
         constraint card_user_id_fk
             references "user",
-    "inDeck"   boolean default false not null
+    "inDeck"   boolean default false             not null
 );
 
-
+create table session
+(
+    id      uuid      default gen_random_uuid() not null
+        constraint sessions_pk
+            primary key,
+    token   varchar                             not null
+        constraint session_pk
+            unique,
+    expires timestamp default (now() + '24:00:00'::interval),
+    user_id uuid                                not null
+        constraint session_user_id_fk
+            references "user"
+);
 
