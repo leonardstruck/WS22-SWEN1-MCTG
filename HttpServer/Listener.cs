@@ -155,7 +155,8 @@ public class Listener
                     }
                     
                     // Run Request with EndpointController
-                    _endpoints[key].Controller.HandleRequest(request, response);
+                    var task = _endpoints[key].Controller.HandleRequest(request, response);
+                    task.Wait();
                 }
                 catch (Exception e)
                 {

@@ -7,10 +7,9 @@ namespace HttpController;
 [HttpEndpoint("/seedDatabase", HttpMethod.POST)]
 public class SeedDatabase : IEndpointController
 {
-    public void HandleRequest(HttpRequest req, HttpResponse res)
+    public async Task HandleRequest(HttpRequest req, HttpResponse res)
     {
         var seed = new SeedRepository();
-        var task = seed.Write();
-        task.Wait();
+        await seed.Write();
     }
 }

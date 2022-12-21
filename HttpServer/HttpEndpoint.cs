@@ -23,7 +23,7 @@ public class HttpEndpointAttribute : Attribute
 
 public interface IEndpointController
 {
-    public void HandleRequest(HttpRequest req, HttpResponse res);
+    public Task HandleRequest(HttpRequest req, HttpResponse res);
 }
 
 public class EndpointEntry
