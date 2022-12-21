@@ -17,6 +17,7 @@ public class RegisterUser : IEndpointController
         if(user == null)
         {
             res.Status = 409;
+            res.StatusMessage = "Conflict";
             res.Json(new {status = "error", message = "User already exists"});
             return;
         }
