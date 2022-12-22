@@ -9,9 +9,7 @@ public class SeedDatabase : IEndpointController
 {
     public async Task<HttpContext> HandleRequest(HttpContext ctx)
     {
-        var seed = new SeedRepository();
-        await seed.Write();
-        
+        await SeedRepository.SeedDatabase();
         return ctx;
     }
 }

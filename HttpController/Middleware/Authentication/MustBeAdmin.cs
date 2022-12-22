@@ -17,7 +17,6 @@ public class MustBeAdmin : IMiddleware
             if(user?.Username == "admin")
                 return Task.FromResult(ctx);
             
-            // return 403
             ctx.Response.Status = 403;
             ctx.Response.StatusMessage = "Forbidden";
             ctx.Response.Json(new {status = "error", message = "You are not allowed to access this resource"});

@@ -2,14 +2,14 @@ using Npgsql;
 
 namespace DataLayer;
 
-public class SeedRepository
+public static class SeedRepository
 {
-    private readonly NpgsqlDataSource _db = Connection.GetInstance().DataSource;
-    public async Task Write()
+    private static  readonly NpgsqlDataSource Db = Connection.GetInstance().DataSource;
+    public static async Task SeedDatabase()
     {
         string sql = await File.ReadAllTextAsync("./seed.sql");
         
-        var command = _db.CreateCommand(sql);
+        var command = Db.CreateCommand(sql);
         await command.ExecuteNonQueryAsync();
     }
 }

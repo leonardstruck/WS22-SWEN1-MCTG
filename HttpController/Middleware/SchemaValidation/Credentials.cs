@@ -1,5 +1,8 @@
 using HttpServer;
 using Models;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
+
 namespace HttpController.Middleware.SchemaValidation;
 
 [HttpMiddleware("SchemaValidation_Credentials")]
@@ -7,12 +10,23 @@ public class SchemaValidationCredentials : IMiddleware
 {
     public Task<HttpContext> HandleRequest(HttpContext ctx)
     {
-        var cred = ctx.Request.DeserializeBody<Credentials>();
-        
-        var isValid = !(string.IsNullOrEmpty(cred.Username) || string.IsNullOrEmpty(cred.Password));
+        string schemaJson = @"{
+            'type': 'object',
+            'properties': {
+                'Username': {
+                    'type': 'string',
+                },
+                'Password': {
+                    'type': 'string',
+                }
+            },
+            'required': ['Username', 'Password']
+        }";
 
+        JSchema schema = JSchema.Parse(schemaJson);
+        JObject json = JObject.Parse(ctx.Request.Body ?? string.Empty);
 
-        if (!isValid)
+        if (!json.IsValid(schema))
         {
             ctx.Abort = true;
             ctx.Response.Status = 400;

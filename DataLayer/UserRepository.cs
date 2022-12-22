@@ -5,7 +5,7 @@ using NpgsqlTypes;
 
 namespace DataLayer;
 
-public class UserRepository
+public static class UserRepository
 {
     private static readonly NpgsqlDataSource Db = Connection.GetInstance().DataSource;
 
