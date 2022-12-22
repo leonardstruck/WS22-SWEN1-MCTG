@@ -1,3 +1,4 @@
+using System.Text;
 using DataLayer;
 using HttpServer;
 using Models;
@@ -22,6 +23,22 @@ public class GetDeck : IEndpointController
             ctx.Response.StatusMessage = "No content";
         }
         
+        // check if format parameter is set
+        if (ctx.Request.Params.ContainsKey("format") && ctx.Request.Params["format"] == "plain")
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var card in cardsInDeck)
+            {
+                sb.AppendLine($"{card.Name}: {card.Damage}");
+            }
+            // return plain format
+            ctx.Response.SetHeader("Content-Type", "text/plain");
+            ctx.Response.Body = sb.ToString();
+            
+            return ctx;
+        }
+
+        // serialize cards to json
         ctx.Response.Json(new
         {
             status = "ok",
