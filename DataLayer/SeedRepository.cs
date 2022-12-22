@@ -3,13 +3,13 @@ using Npgsql;
 namespace DataLayer;
 
 public static class SeedRepository
-{
-    private static  readonly NpgsqlDataSource Db = Connection.GetInstance().DataSource;
+{ 
     public static async Task SeedDatabase()
     {
+        await using var db = Connection.GetDataSource();
         string sql = await File.ReadAllTextAsync("./seed.sql");
         
-        var command = Db.CreateCommand(sql);
+        await using var command = db.CreateCommand(sql);
         await command.ExecuteNonQueryAsync();
     }
 }

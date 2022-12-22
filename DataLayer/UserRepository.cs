@@ -7,10 +7,10 @@ namespace DataLayer;
 
 public static class UserRepository
 {
-    private static readonly NpgsqlDataSource Db = Connection.GetInstance().DataSource;
-
     public static async Task<User?> RegisterUser(Credentials credentials)
     {
+        await using var db = Connection.GetDataSource();
+
         // Check if user already exists
         var user = await GetUserByUsername(credentials.Username);
         if (user != null)
@@ -23,12 +23,12 @@ public static class UserRepository
 
         var newUser = new User(credentials.Username);
         
-        var cmd = Db.CreateCommand("INSERT INTO \"user\" (username, password, coins) VALUES (@username, @password, @coins) RETURNING id");
+        await using var cmd = db.CreateCommand("INSERT INTO \"user\" (username, password, coins) VALUES (@username, @password, @coins) RETURNING id");
         cmd.Parameters.AddWithValue("username", credentials.Username);
         cmd.Parameters.AddWithValue("password", passwordHash);
         cmd.Parameters.AddWithValue("coins", newUser.Coins);
         
-        var reader = await cmd.ExecuteReaderAsync();
+        await using var reader = await cmd.ExecuteReaderAsync();
         
         if (reader.Read())
         {
@@ -40,10 +40,12 @@ public static class UserRepository
     
     public static async Task<User?> GetUserByUsername(string username)
     {
-        var cmd = Db.CreateCommand("SELECT id, username, password, coins, name, bio, image FROM \"user\" WHERE username = @username LIMIT 1");
+        await using var db = Connection.GetDataSource();
+
+        await using var cmd = db.CreateCommand("SELECT id, username, password, coins, name, bio, image FROM \"user\" WHERE username = @username LIMIT 1");
         cmd.Parameters.AddWithValue("username", username);
         
-        var reader = await cmd.ExecuteReaderAsync();
+        await using var reader = await cmd.ExecuteReaderAsync();
         if (!reader.HasRows)
             return null;
         
@@ -62,10 +64,12 @@ public static class UserRepository
     
     public static async Task<string?> LoginUser(Credentials credentials)
     {
-        var hashCmd = Db.CreateCommand("SELECT id, password FROM \"user\" WHERE username = @username LIMIT 1");
+        await using var db = Connection.GetDataSource();
+
+        await using var hashCmd = db.CreateCommand("SELECT id, password FROM \"user\" WHERE username = @username LIMIT 1");
         hashCmd.Parameters.AddWithValue("username", credentials.Username);
         
-        var hashReader = await hashCmd.ExecuteReaderAsync();
+        await using var hashReader = await hashCmd.ExecuteReaderAsync();
         if (!hashReader.HasRows)
             return null;
         
@@ -82,7 +86,7 @@ public static class UserRepository
         var token = Convert.ToBase64String(bytes);
         
         // Store token in database
-        var tokenCmd = Db.CreateCommand("INSERT INTO session (token, user_id) VALUES (@token, @user_id)");
+        await using var tokenCmd = db.CreateCommand("INSERT INTO session (token, user_id) VALUES (@token, @user_id)");
         tokenCmd.Parameters.AddWithValue("token", token);
         tokenCmd.Parameters.AddWithValue("user_id", NpgsqlDbType.Uuid, Guid.Parse(userId));
         
@@ -93,12 +97,14 @@ public static class UserRepository
     
     public static async Task<User?> GetUserByToken(string token)
     {
-        var cmd = Db.CreateCommand(
+        await using var db = Connection.GetDataSource();
+
+        await using var cmd = db.CreateCommand(
             "SELECT id, username, password, coins, name, bio, image FROM \"user\" " +
             "WHERE id = (SELECT user_id FROM session WHERE token = @token AND expires > now() LIMIT 1) LIMIT 1");
         cmd.Parameters.AddWithValue("token", token);
         
-        var reader = await cmd.ExecuteReaderAsync();
+        await using var reader = await cmd.ExecuteReaderAsync();
         if (!reader.HasRows)
             return null;
         
@@ -117,11 +123,13 @@ public static class UserRepository
 
     public static async Task<bool> SpendCoins(Guid userId, int amount)
     {
+        await using var db = Connection.GetDataSource();
+
         // Check if user has enough coins
-        var cmd = Db.CreateCommand("SELECT coins FROM \"user\" WHERE id = @id LIMIT 1");
+        await using var cmd = db.CreateCommand("SELECT coins FROM \"user\" WHERE id = @id LIMIT 1");
         cmd.Parameters.AddWithValue("id", NpgsqlDbType.Uuid, userId);
         
-        var reader = await cmd.ExecuteReaderAsync();
+        await using var reader = await cmd.ExecuteReaderAsync();
         if (!reader.HasRows)
             return false;
         
@@ -132,7 +140,7 @@ public static class UserRepository
             return false;
         
         // Update user coins
-        var updateCmd = Db.CreateCommand("UPDATE \"user\" SET coins = coins - @amount WHERE id = @id");
+        await using var updateCmd = db.CreateCommand("UPDATE \"user\" SET coins = coins - @amount WHERE id = @id");
         updateCmd.Parameters.AddWithValue("amount", amount);
         updateCmd.Parameters.AddWithValue("id", NpgsqlDbType.Uuid, userId);
         
@@ -141,7 +149,9 @@ public static class UserRepository
     
     public static async Task<bool> RefundCoins(Guid userId, int amount)
     {
-        var cmd = Db.CreateCommand("UPDATE \"user\" SET coins = coins + @amount WHERE id = @id");
+        await using var db = Connection.GetDataSource();
+
+        await using var cmd = db.CreateCommand("UPDATE \"user\" SET coins = coins + @amount WHERE id = @id");
         cmd.Parameters.AddWithValue("amount", amount);
         cmd.Parameters.AddWithValue("id", NpgsqlDbType.Uuid, userId);
         

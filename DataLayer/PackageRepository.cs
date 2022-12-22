@@ -5,10 +5,9 @@ namespace DataLayer;
 
 public static class PackageRepository
 {
-    private static readonly NpgsqlDataSource Db = Connection.GetInstance().DataSource;
-
     public static async Task CreatePackage(GenericCard[] cards)
     {
+        await using var db = Connection.GetDataSource();
         // Check if package contains 5 cards
         if (cards.Length != 5)
         {
@@ -16,7 +15,7 @@ public static class PackageRepository
         }
         
         // Create Package in DB and get ID
-        var packageCmd = Db.CreateCommand("INSERT INTO package DEFAULT VALUES RETURNING id");
+        await using var packageCmd = db.CreateCommand("INSERT INTO package DEFAULT VALUES RETURNING id");
 
         if(await packageCmd.ExecuteScalarAsync() is not Guid packageId)
         {
@@ -31,7 +30,9 @@ public static class PackageRepository
     
     public static async Task<GenericCard[]?> GetCards(Guid packageId)
     {
-        var packageCmd = Db.CreateCommand("SELECT id, name, damage FROM card WHERE package_id = @id");
+        await using var db = Connection.GetDataSource();
+
+        await using var packageCmd = db.CreateCommand("SELECT id, name, damage FROM card WHERE package_id = @id");
         packageCmd.Parameters.AddWithValue("id", packageId);
         
         var cards = new List<GenericCard>();
@@ -54,15 +55,19 @@ public static class PackageRepository
 
     private static async Task UpdateOwnerRecords(Guid packageId)
     {
-        var cmd = Db.CreateCommand("UPDATE card SET owner_id = (SELECT acquired_by FROM package WHERE id = @package_id) WHERE package_id = @package_id");
+        await using var db = Connection.GetDataSource();
+
+        await using var cmd = db.CreateCommand("UPDATE card SET owner_id = (SELECT acquired_by FROM package WHERE id = @package_id) WHERE package_id = @package_id");
         cmd.Parameters.AddWithValue("package_id", packageId);
         await cmd.ExecuteNonQueryAsync();
     }
 
     public static async Task<Package?> GetRandomPackage(Guid userId)
     {
+        await using var db = Connection.GetDataSource();
+
         // update acquiredBy of random package and return it's id
-        var packageCmd = Db.CreateCommand("UPDATE package SET acquired_by = @userId WHERE id = (SELECT id FROM package WHERE package.acquired_by IS NULL ORDER BY random() LIMIT 1) RETURNING id");
+        await using var packageCmd = db.CreateCommand("UPDATE package SET acquired_by = @userId WHERE id = (SELECT id FROM package WHERE package.acquired_by IS NULL ORDER BY random() LIMIT 1) RETURNING id");
         packageCmd.Parameters.AddWithValue("userId", userId);
         
         if (await packageCmd.ExecuteScalarAsync() is not Guid packageId)
