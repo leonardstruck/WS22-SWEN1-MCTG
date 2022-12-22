@@ -111,17 +111,17 @@ public class Listener
         {
             HttpContext ctx = new HttpContext(HttpRequest.CreateInstance(clientSocket.GetStream()), new HttpResponse(clientSocket.GetStream()));
 
-            // Split Path
-            var pathSplit = ctx.Request.Path.Split("/");
-
-            // Build Key (check if path has multiple forward slashes and replace with wildcard *)
-            var key = ctx.Request.Method + "%%/" + pathSplit[1] +
-                      (pathSplit.Length > 2 && pathSplit[2].Length > 0 ? "/*" : "");
+            var pathWithoutQuery = ctx.Request.Path.Split('?')[0];
             
-            // strip query params from key
-            if (key.Contains("?"))
+            // check if endpoint exists
+            var key = ctx.Request.Method + "%%" + pathWithoutQuery;
+            if (!_endpoints.ContainsKey(key))
             {
-                key = key.Substring(0, key.IndexOf("?", StringComparison.Ordinal));
+                // try if there is a wildcard endpoint
+                // replace last path part with wildcard
+                var wildcardPath = pathWithoutQuery.Split('/');
+                wildcardPath[^1] = "*";
+                key = ctx.Request.Method + "%%" + string.Join('/', wildcardPath);
             }
 
             if (_endpoints.ContainsKey(key))
