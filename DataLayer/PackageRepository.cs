@@ -70,6 +70,7 @@ public static class PackageRepository
             return null;
         }
         
+        // update owner_id of all cards in package
         await UpdateOwnerRecords(packageId);
         
         if (await GetCards(packageId) is not {} cards)
