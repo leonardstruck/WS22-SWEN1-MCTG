@@ -32,7 +32,7 @@ public static class UserRepository
         
         if (reader.Read())
         {
-            newUser.Id = reader["id"].ToString();
+            newUser.Id = reader.GetGuid(0);
         }
         
         return newUser;
@@ -51,7 +51,7 @@ public static class UserRepository
         
         return new User(username)
         {
-            Id = reader["id"].ToString(),
+            Id = reader.GetGuid(0),
             Username = reader["username"].ToString()!,
             
             Bio = reader["bio"].ToString(),
@@ -106,12 +106,45 @@ public static class UserRepository
         
         return new User(reader["username"].ToString()!)
         {
-            Id = reader["id"].ToString(),
+            Id = reader.GetGuid(0),
             Username = reader["username"].ToString()!,
             
             Bio = reader["bio"].ToString(),
             Image = reader["image"].ToString(),
             Coins = int.Parse(reader["coins"].ToString()!),
         };
+    }
+
+    public static async Task<bool> SpendCoins(Guid userId, int amount)
+    {
+        // Check if user has enough coins
+        var cmd = Db.CreateCommand("SELECT coins FROM \"user\" WHERE id = @id LIMIT 1");
+        cmd.Parameters.AddWithValue("id", NpgsqlDbType.Uuid, userId);
+        
+        var reader = await cmd.ExecuteReaderAsync();
+        if (!reader.HasRows)
+            return false;
+        
+        await reader.ReadAsync();
+        
+        var coins = int.Parse(reader["coins"].ToString()!);
+        if (coins < amount)
+            return false;
+        
+        // Update user coins
+        var updateCmd = Db.CreateCommand("UPDATE \"user\" SET coins = coins - @amount WHERE id = @id");
+        updateCmd.Parameters.AddWithValue("amount", amount);
+        updateCmd.Parameters.AddWithValue("id", NpgsqlDbType.Uuid, userId);
+        
+        return await updateCmd.ExecuteNonQueryAsync() == 1;
+    }
+    
+    public static async Task<bool> RefundCoins(Guid userId, int amount)
+    {
+        var cmd = Db.CreateCommand("UPDATE \"user\" SET coins = coins + @amount WHERE id = @id");
+        cmd.Parameters.AddWithValue("amount", amount);
+        cmd.Parameters.AddWithValue("id", NpgsqlDbType.Uuid, userId);
+        
+        return await cmd.ExecuteNonQueryAsync() == 1;
     }
 }
