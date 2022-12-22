@@ -67,4 +67,36 @@ public static class CardRepository
         
         return cards.ToArray();
     }
+
+    public static async Task<bool> PutCardsInDeck(Guid ownerId, Guid[] cardIds)
+    {
+        await using var db = Connection.GetDataSource();
+        
+        // check if 4 cards were provided
+        if(cardIds.Length != 4)
+            return false;
+        
+        // check if all cards belong to the user
+        await using var countOwnedCommand = db.CreateCommand("SELECT COUNT(*) FROM card WHERE owner_id = @owner_id AND id = ANY(@card_ids)");
+        countOwnedCommand.Parameters.AddWithValue("owner_id", ownerId);
+        countOwnedCommand.Parameters.AddWithValue("card_ids", cardIds);
+        
+        var countOwned = (long) (await countOwnedCommand.ExecuteScalarAsync() ?? 0);
+        if(countOwned != 4)
+            return false;
+        
+        
+        // reset all cards in deck
+        await using var resetCommand = db.CreateCommand("UPDATE card SET \"inDeck\" = FALSE WHERE owner_id = @owner_id");
+        resetCommand.Parameters.AddWithValue("owner_id", ownerId);
+        await resetCommand.ExecuteNonQueryAsync();
+        
+        // put cards in deck
+        await using var command2 = db.CreateCommand("UPDATE card SET \"inDeck\" = TRUE WHERE id = ANY(@card_ids) AND owner_id = @owner_id");
+        command2.Parameters.AddWithValue("card_ids", cardIds);
+        command2.Parameters.AddWithValue("owner_id", ownerId);
+        
+        await command2.ExecuteNonQueryAsync();
+        return true;
+    }
 }
