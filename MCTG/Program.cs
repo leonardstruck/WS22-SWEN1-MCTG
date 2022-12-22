@@ -2,7 +2,7 @@
 using HttpServer;
 using HttpServer.Resolver;
 
-Listener listener = new(IPAddress.Loopback, 10001);
+Listener listener = new(IPAddress.Any, 10001);
 
 var endpoints = EndpointResolver.FindEndpointControllers();
 var middlewares = MiddlewareResolver.FindMiddleware();
