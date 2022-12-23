@@ -157,4 +157,22 @@ public static class UserRepository
         
         return await cmd.ExecuteNonQueryAsync() == 1;
     }
+
+    public static async Task UpdateUser(User updatedUser)
+    {
+        // only updates name, bio and image
+        await using var db = Connection.GetDataSource();
+        
+        // user object must have an id
+        if(updatedUser.Id == Guid.Empty)
+            throw new ArgumentException("User object must have an id");
+        
+        await using var cmd = db.CreateCommand("UPDATE \"user\" SET name = @name, bio = @bio, image = @image WHERE id = @id");
+        cmd.Parameters.AddWithValue("name", updatedUser.Name ?? "");
+        cmd.Parameters.AddWithValue("bio", updatedUser.Bio ?? "");
+        cmd.Parameters.AddWithValue("image", updatedUser.Image ?? "");
+        cmd.Parameters.AddWithValue("id", NpgsqlDbType.Uuid, updatedUser.Id!);
+        
+        await cmd.ExecuteNonQueryAsync();
+    }
 }

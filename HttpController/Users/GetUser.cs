@@ -4,7 +4,7 @@ using HttpMethod = HttpServer.HttpMethod;
 
 namespace HttpController.Users;
 
-[HttpEndpoint("/users/*", HttpMethod.GET, "Auth")]
+[HttpEndpoint("/users/*", HttpMethod.GET, "Auth", "Auth_PathMustMatchToUsername")]
 public class GetUser : IEndpointController
 {
     public async Task<HttpContext> HandleRequest(HttpContext ctx)
