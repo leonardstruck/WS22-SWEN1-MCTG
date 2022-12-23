@@ -29,11 +29,11 @@ public class GetUser : IEndpointController
             status = "ok",
             data = new
             {
-                Id = user.Id,
-                Username = user.Username,
-                Name = user.Name,
-                Bio = user.Bio,
-                Image = user.Image
+                user.Id,
+                user.Username,
+                user.Name,
+                user.Bio,
+                user.Image
             }
         });
         
