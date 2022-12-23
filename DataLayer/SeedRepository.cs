@@ -1,5 +1,3 @@
-using Npgsql;
-
 namespace DataLayer;
 
 public static class SeedRepository

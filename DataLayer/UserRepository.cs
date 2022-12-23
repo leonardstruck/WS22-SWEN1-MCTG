@@ -1,6 +1,5 @@
 using System.Security.Cryptography;
 using Models;
-using Npgsql;
 using NpgsqlTypes;
 
 namespace DataLayer;

@@ -1,5 +1,4 @@
 using Models;
-using Npgsql;
 
 namespace DataLayer;
 
