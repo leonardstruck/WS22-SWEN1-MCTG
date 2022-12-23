@@ -114,7 +114,7 @@ public static class UserRepository
         {
             Id = reader.GetGuid(0),
             Username = reader["username"].ToString()!,
-            
+            Name = reader["name"].ToString(),
             Bio = reader["bio"].ToString(),
             Image = reader["image"].ToString(),
             Coins = int.Parse(reader["coins"].ToString()!),
@@ -161,6 +161,8 @@ public static class UserRepository
     public static async Task UpdateUser(User updatedUser)
     {
         // only updates name, bio and image
+        
+        
         await using var db = Connection.GetDataSource();
         
         // user object must have an id
@@ -174,5 +176,51 @@ public static class UserRepository
         cmd.Parameters.AddWithValue("id", NpgsqlDbType.Uuid, updatedUser.Id!);
         
         await cmd.ExecuteNonQueryAsync();
+    }
+
+    public static async Task<Stats?> GetStatsByUserId(Guid userId)
+    {
+        await using var db = Connection.GetDataSource();
+        
+        await using var cmd = db.CreateCommand("SELECT name, elo, wins, losses FROM \"user\" WHERE id = @user_id LIMIT 1");
+        cmd.Parameters.AddWithValue("user_id", NpgsqlDbType.Uuid, userId);
+        
+        await using var reader = await cmd.ExecuteReaderAsync();
+        
+        if (!reader.HasRows)
+            return null;
+        
+        await reader.ReadAsync();
+        
+        return new Stats (
+            name: reader.GetString(0),
+            elo: reader.GetInt32(1), 
+            wins: reader.GetInt32(2), 
+            losses: reader.GetInt32(3)
+            );
+    }
+
+    public static async Task<Stats[]> GetStatsOrderedByElo()
+    {
+        await using var db = Connection.GetDataSource();
+        
+        // get all users (excluding admin) ordered by elo and limit to 10
+        await using var cmd = db.CreateCommand("SELECT name, elo, wins, losses FROM \"user\" WHERE username != 'admin' ORDER BY elo DESC LIMIT 10");
+        
+        await using var reader = await cmd.ExecuteReaderAsync();
+        
+        var stats = new List<Stats>();
+        
+        while (await reader.ReadAsync())
+        {
+            stats.Add(new Stats(
+                name: reader.GetString(0),
+                elo: reader.GetInt32(1),
+                wins: reader.GetInt32(2),
+                losses: reader.GetInt32(3)
+            ));
+        }
+        
+        return stats.ToArray();
     }
 }
