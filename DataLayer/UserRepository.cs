@@ -56,6 +56,7 @@ public static class UserRepository
             Id = reader.GetGuid(0),
             Username = reader["username"].ToString()!,
             
+            Name = reader["name"].ToString(),
             Bio = reader["bio"].ToString(),
             Image = reader["image"].ToString(),
             Coins = int.Parse(reader["coins"].ToString()!),
