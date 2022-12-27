@@ -9,7 +9,7 @@ public class GetScoreboard : IEndpointController
 {
     public async Task<HttpContext> HandleRequest(HttpContext ctx)
     {
-        var scores = await UserRepository.GetStatsOrderedByElo();
+        var scores = await BattleRepository.GetStatsOrderedByElo();
 
         ctx.Response.Json(new
         {

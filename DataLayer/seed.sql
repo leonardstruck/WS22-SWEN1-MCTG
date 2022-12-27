@@ -4,24 +4,43 @@ drop table if exists package;
 
 drop table if exists "session";
 
+drop table if exists "battle";
+
 drop table if exists "user";
 
 
 create table "user"
 (
-    id       uuid    default gen_random_uuid() not null
+    id          uuid    default gen_random_uuid() not null
         constraint user_pk
             primary key,
-    username varchar,
-    password varchar,
-    coins    integer,
-    name     varchar,
-    bio      varchar,
-    image    varchar,
-    elo      integer default 1500              not null,
-    wins     integer default 0                 not null,
-    losses   integer default 0                 not null
+    username    varchar,
+    password    varchar,
+    coins       integer,
+    name        varchar,
+    bio         varchar,
+    image       varchar,
+    elo         integer default 1500              not null,
+    wins        integer default 0                 not null,
+    losses      integer default 0                 not null,
+    lobby_entry timestamp
 );
+
+create table battle
+(
+    id         uuid default gen_random_uuid() not null
+        constraint battle_pk
+            primary key,
+    opponent_1 uuid                           not null
+        constraint battle_user_opp1_fk
+            references "user",
+    opponent_2 uuid                           not null
+        constraint battle_user_opp2_fk
+            references "user",
+    timestamp  timestamp,
+    log        jsonb
+);
+
 
 create table package
 (

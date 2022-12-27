@@ -98,4 +98,16 @@ public static class CardRepository
         await command2.ExecuteNonQueryAsync();
         return true;
     }
+    
+    public static async Task UpdateDeck(Guid ownerId, Guid[] cardIds)
+    {
+        await using var db = Connection.GetDataSource();
+        
+        // set owner id for every card
+        await using var command = db.CreateCommand("UPDATE card SET owner_id = @owner_id, \"inDeck\" = false WHERE id = ANY(@card_ids)");
+        command.Parameters.AddWithValue("owner_id", ownerId);
+        command.Parameters.AddWithValue("card_ids", cardIds);
+
+        await command.ExecuteNonQueryAsync();
+    }
 }

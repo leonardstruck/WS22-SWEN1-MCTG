@@ -15,7 +15,7 @@ public class GetStats : IEndpointController
         var userId = (Guid)user.Id!;
         
         // get stats from database
-        var stats = await UserRepository.GetStatsByUserId(userId);
+        var stats = await BattleRepository.GetStatsByUserId(userId);
         
         ctx.Response.Json(new
         {
