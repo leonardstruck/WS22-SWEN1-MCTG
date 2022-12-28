@@ -49,4 +49,33 @@ public class TradeRepository
         
         return await reader.ReadAsync();
     }
+    
+    public static async Task<Guid?> GetTradeOwner(Guid tradeId)
+    {
+        await using var db = Connection.GetDataSource();
+        
+        await using var cmd = db.CreateCommand("SELECT owner_id FROM trading INNER JOIN card c on c.id = trading.card_id WHERE trading.id = @trade_id");
+        cmd.Parameters.AddWithValue("@trade_id", tradeId);
+        
+        await using var reader = await cmd.ExecuteReaderAsync();
+        
+        if (await reader.ReadAsync())
+        {
+            return reader.GetGuid(0);
+        }
+        
+        return null;
+    }
+    
+    public static async Task DeleteTrade(Guid tradeId)
+    {
+        await using var db = Connection.GetDataSource();
+        
+        // delete trade entry and unblock card
+        await using var cmd = db.CreateCommand("UPDATE card SET \"tradeLock\" = false " +
+                                               "WHERE id = (SELECT card_id FROM trading WHERE id = @trade_id);" +
+                                               "DELETE FROM trading WHERE id = @trade_id;");
+        cmd.Parameters.AddWithValue("@trade_id", tradeId);
+        await cmd.ExecuteNonQueryAsync();
+    }
 }
