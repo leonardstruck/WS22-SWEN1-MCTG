@@ -27,7 +27,7 @@ public class GetTradings : IEndpointController
         ctx.Response.Json(new
         {
             status = "ok",
-            data = tradings.Select(x => new {x.Id, CardToTrade = x.CardToTrade.Id, type = x.Type, x.MinDamage})
+            data = tradings
         });
         
         return ctx;

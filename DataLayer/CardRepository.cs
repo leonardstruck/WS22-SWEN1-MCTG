@@ -33,6 +33,19 @@ public static class CardRepository
         return new GenericCard(reader.GetString(0), reader.GetInt32(1), cardId);
     }
 
+    public static async Task<bool> VerifyCardOwnership(Guid cardId, Guid ownerId)
+    {
+        await using var db = Connection.GetDataSource();
+        
+        await using var cmd = db.CreateCommand("SELECT COUNT(*) FROM card WHERE id = @id AND owner_id = @owner_id");
+        cmd.Parameters.AddWithValue("id", cardId);
+        cmd.Parameters.AddWithValue("owner_id", ownerId);
+
+        var count = (long)(await cmd.ExecuteScalarAsync() ?? 0);
+
+        return count == 1;
+    }
+    
     public static async Task<GenericCard[]> GetCardsByOwner(Guid ownerId)
     {
         await using var db = Connection.GetDataSource();
@@ -54,6 +67,32 @@ public static class CardRepository
             cards.Add(card);
         }
         
+        return cards.ToArray();
+    }
+
+    public static async Task<GenericCard[]> GetTradeableCardsByOwner(Guid ownerId)
+    {
+        await using var db = Connection.GetDataSource();
+        
+        await using var command = db.CreateCommand("SELECT id, name, damage FROM card WHERE " +
+                                                   "owner_id = @owner_id AND \"inDeck\" = false AND \"tradeLock\" = false");
+        
+        command.Parameters.AddWithValue("owner_id", ownerId);
+        var cards = new List<GenericCard>();
+        
+        await using var reader = await command.ExecuteReaderAsync();
+        
+        while(await reader.ReadAsync())
+        {
+            var id = reader.GetGuid(0);
+            var name = reader.GetString(1);
+            var damage = reader.GetInt32(2);
+
+            var card = new GenericCard(name, damage, id);
+            
+            cards.Add(card);
+        }
+
         return cards.ToArray();
     }
 

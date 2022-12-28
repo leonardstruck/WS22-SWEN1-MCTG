@@ -1,19 +1,17 @@
-using Models.Card;
-
 namespace Models;
 
 public class Trade
 {
     public Guid? Id { get; }
-    public ICard CardToTrade { get; }
+    public Guid CardToTrade { get; }
     public string Type { get; }
-    public int MinDamage { get; }
+    public int MinimumDamage { get; }
     
-    public Trade(ICard cardToTrade, string type, int minDamage, Guid? id = null)
+    public Trade(Guid cardToTrade, string type, int minimumDamage, Guid? id = null)
     {
         Id = id;
         CardToTrade = cardToTrade;
         Type = type;
-        MinDamage = minDamage;
+        MinimumDamage = minimumDamage;
     }
 }
