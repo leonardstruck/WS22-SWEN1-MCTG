@@ -1,0 +1,4559 @@
+{
+	"info": {
+		"_postman_id": "0bc56bbd-5912-4885-86e9-8dd0af0bf341",
+		"name": "IntegrationTest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24378875"
+	},
+	"item": [
+		{
+			"name": "0. Preparation",
+			"item": [
+				{
+					"name": "Seed Database",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/seedDatabase",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"seedDatabase"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "1. Create Users (Registration)",
+			"item": [
+				{
+					"name": "register kienboec",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Returns user ID\", function () {",
+									"    var jsonData = pm.response.json();   ",
+									"    pm.expect(jsonData.data.Id).to.exist;",
+									"",
+									"    // store user ID for further tests",
+									"    pm.environment.set(\"id_kienboec\", jsonData.data.Id);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Username\": \"kienboec\",\n    \"Password\": \"daniel\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register altenhof",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Returns user ID\", function () {",
+									"    var jsonData = pm.response.json();   ",
+									"    pm.expect(jsonData.data.Id).to.exist;",
+									"",
+									"    // store user ID for further tests",
+									"    pm.environment.set(\"id_altenhof\", jsonData.data.Id);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Username\": \"altenhof\",\n    \"Password\": \"markus\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Username\": \"admin\",\n    \"Password\": \"istrator\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register kienboec again (should fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 409\", function () {",
+									"    pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Username\": \"kienboec\",\n    \"Password\": \"daniel\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register kienboec again with different password (should fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 409\", function () {",
+									"    pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Username\": \"kienboec\",\n    \"Password\": \"different\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Login Users",
+			"item": [
+				{
+					"name": "login kienboec",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Data includes token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"token\");",
+									"",
+									"    // store token as env variable",
+									"    pm.environment.set(\"token_kienboec\", jsonData.data.token);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Username\": \"kienboec\",\n    \"Password\": \"daniel\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/sessions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"sessions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login altenhof",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Data includes token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"token\");",
+									"",
+									"    // store token as env variable",
+									"    pm.environment.set(\"token_altenhof\", jsonData.data.token);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Username\": \"altenhof\",\n    \"Password\": \"markus\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/sessions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"sessions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Data includes token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property(\"token\");",
+									"",
+									"",
+									"    // store token as env variable",
+									"    pm.environment.set(\"token_admin\", jsonData.data.token);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Username\": \"admin\",\n    \"Password\": \"istrator\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/sessions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"sessions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login kienboec with wrong password (should fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Username\": \"kienboec\",\n    \"Password\": \"different\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/sessions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"sessions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Create packages",
+			"item": [
+				{
+					"name": "package 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"Name\": \"WaterGoblin\",\n        \"Damage\": 10\n    },\n    {\n        \"Name\": \"Dragon\",\n        \"Damage\": 50\n    },\n    {\n        \"Name\": \"WaterSpell\",\n        \"Damage\": 20\n    },\n    {\n        \"Name\": \"Ork\",\n        \"Damage\": 45\n    },\n        {\n        \"Name\": \"FireSpell\",\n        \"Damage\": 25\n    }\n\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"Name\": \"WaterGoblin\",\n        \"Damage\": 9\n    },\n    {\n        \"Name\": \"Dragon\",\n        \"Damage\": 55\n    },\n    {\n        \"Name\": \"WaterSpell\",\n        \"Damage\": 21\n    },\n    {\n        \"Name\": \"Ork\",\n        \"Damage\": 55\n    },\n        {\n        \"Name\": \"WaterSpell\",\n        \"Damage\": 23\n    }\n\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"Name\": \"WaterGoblin\",\n        \"Damage\": 11\n    },\n    {\n        \"Name\": \"Dragon\",\n        \"Damage\": 70\n    },\n    {\n        \"Name\": \"WaterSpell\",\n        \"Damage\": 22\n    },\n    {\n        \"Name\": \"Ork\",\n        \"Damage\": 40\n    },\n        {\n        \"Name\": \"RegularSpell\",\n        \"Damage\": 28\n    }\n\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package 4",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"Name\": \"WaterGoblin\",\n        \"Damage\": 10\n    },\n    {\n        \"Name\": \"Dragon\",\n        \"Damage\": 50\n    },\n    {\n        \"Name\": \"WaterSpell\",\n        \"Damage\": 20\n    },\n    {\n        \"Name\": \"Ork\",\n        \"Damage\": 45\n    },\n        {\n        \"Name\": \"WaterSpell\",\n        \"Damage\": 25\n    }\n\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package 5",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"Name\": \"WaterGoblin\",\n        \"Damage\": 9\n    },\n    {\n        \"Name\": \"Dragon\",\n        \"Damage\": 55\n    },\n    {\n        \"Name\": \"WaterSpell\",\n        \"Damage\": 21\n    },\n    {\n        \"Name\": \"Ork\",\n        \"Damage\": 55\n    },\n        {\n        \"Name\": \"FireSpell\",\n        \"Damage\": 23\n    }\n\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package 6",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"Name\": \"WaterGoblin\",\n        \"Damage\": 11\n    },\n    {\n        \"Name\": \"Dragon\",\n        \"Damage\": 70\n    },\n    {\n        \"Name\": \"WaterSpell\",\n        \"Damage\": 22\n    },\n    {\n        \"Name\": \"Ork\",\n        \"Damage\": 40\n    },\n        {\n        \"Name\": \"RegularSpell\",\n        \"Damage\": 28\n    }\n\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"packages"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Acquire packages (kienboec)",
+			"item": [
+				{
+					"name": "acquire 1. package",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var cardSchema = {",
+									"    properties: {",
+									"        Name: {",
+									"            type: \"string\"",
+									"        },",
+									"        Damage: {",
+									"            type: \"number\"",
+									"        },",
+									"        Id: {",
+									"            type: \"string\"",
+									"        }",
+									"    },",
+									"    required: [\"Name\", \"Damage\", \"Id\"]",
+									"}",
+									"",
+									"var schema = {",
+									"    type: \"object\",",
+									"    properties: {",
+									"        Id: String,",
+									"        Cards: {",
+									"            type: \"array\",",
+									"            items: cardSchema",
+									"        }",
+									"    },",
+									"    required: [\"Id\", \"Cards\"]",
+									"};",
+									"",
+									"pm.test('Returned data', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.not.be.undefined;",
+									"})",
+									"",
+									"",
+									"pm.test('Data contains valid array of cards', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(tv4.validate(jsonData.data, schema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/transactions/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"transactions",
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "acquire 2. package",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var cardSchema = {",
+									"    properties: {",
+									"        Name: {",
+									"            type: \"string\"",
+									"        },",
+									"        Damage: {",
+									"            type: \"number\"",
+									"        },",
+									"        Id: {",
+									"            type: \"string\"",
+									"        }",
+									"    },",
+									"    required: [\"Name\", \"Damage\", \"Id\"]",
+									"}",
+									"",
+									"var schema = {",
+									"    type: \"object\",",
+									"    properties: {",
+									"        Id: String,",
+									"        Cards: {",
+									"            type: \"array\",",
+									"            items: cardSchema",
+									"        }",
+									"    },",
+									"    required: [\"Id\", \"Cards\"]",
+									"};",
+									"",
+									"pm.test('Returned data', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.not.be.undefined;",
+									"})",
+									"",
+									"",
+									"pm.test('Data contains valid array of cards', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(tv4.validate(jsonData.data, schema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/transactions/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"transactions",
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "acquire 3. package",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var cardSchema = {",
+									"    properties: {",
+									"        Name: {",
+									"            type: \"string\"",
+									"        },",
+									"        Damage: {",
+									"            type: \"number\"",
+									"        },",
+									"        Id: {",
+									"            type: \"string\"",
+									"        }",
+									"    },",
+									"    required: [\"Name\", \"Damage\", \"Id\"]",
+									"}",
+									"",
+									"var schema = {",
+									"    type: \"object\",",
+									"    properties: {",
+									"        Id: String,",
+									"        Cards: {",
+									"            type: \"array\",",
+									"            items: cardSchema",
+									"        }",
+									"    },",
+									"    required: [\"Id\", \"Cards\"]",
+									"};",
+									"",
+									"pm.test('Returned data', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.not.be.undefined;",
+									"})",
+									"",
+									"",
+									"pm.test('Data contains valid array of cards', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(tv4.validate(jsonData.data, schema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/transactions/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"transactions",
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "acquire 4. package",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var cardSchema = {",
+									"    properties: {",
+									"        Name: {",
+									"            type: \"string\"",
+									"        },",
+									"        Damage: {",
+									"            type: \"number\"",
+									"        },",
+									"        Id: {",
+									"            type: \"string\"",
+									"        }",
+									"    },",
+									"    required: [\"Name\", \"Damage\", \"Id\"]",
+									"}",
+									"",
+									"var schema = {",
+									"    type: \"object\",",
+									"    properties: {",
+									"        Id: String,",
+									"        Cards: {",
+									"            type: \"array\",",
+									"            items: cardSchema",
+									"        }",
+									"    },",
+									"    required: [\"Id\", \"Cards\"]",
+									"};",
+									"",
+									"pm.test('Returned data', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.not.be.undefined;",
+									"})",
+									"",
+									"",
+									"pm.test('Data contains valid array of cards', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(tv4.validate(jsonData.data, schema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/transactions/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"transactions",
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "should fail (no money)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/transactions/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"transactions",
+								"packages"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Acquire packages (altenhof)",
+			"item": [
+				{
+					"name": "acquire 1. package",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var cardSchema = {",
+									"    properties: {",
+									"        Name: {",
+									"            type: \"string\"",
+									"        },",
+									"        Damage: {",
+									"            type: \"number\"",
+									"        },",
+									"        Id: {",
+									"            type: \"string\"",
+									"        }",
+									"    },",
+									"    required: [\"Name\", \"Damage\", \"Id\"]",
+									"}",
+									"",
+									"var schema = {",
+									"    type: \"object\",",
+									"    properties: {",
+									"        Id: String,",
+									"        Cards: {",
+									"            type: \"array\",",
+									"            items: cardSchema",
+									"        }",
+									"    },",
+									"    required: [\"Id\", \"Cards\"]",
+									"};",
+									"",
+									"pm.test('Returned data', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.not.be.undefined;",
+									"})",
+									"",
+									"",
+									"pm.test('Data contains valid array of cards', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(tv4.validate(jsonData.data, schema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/transactions/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"transactions",
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "acquire 2. package",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var cardSchema = {",
+									"    properties: {",
+									"        Name: {",
+									"            type: \"string\"",
+									"        },",
+									"        Damage: {",
+									"            type: \"number\"",
+									"        },",
+									"        Id: {",
+									"            type: \"string\"",
+									"        }",
+									"    },",
+									"    required: [\"Name\", \"Damage\", \"Id\"]",
+									"}",
+									"",
+									"var schema = {",
+									"    type: \"object\",",
+									"    properties: {",
+									"        Id: String,",
+									"        Cards: {",
+									"            type: \"array\",",
+									"            items: cardSchema",
+									"        }",
+									"    },",
+									"    required: [\"Id\", \"Cards\"]",
+									"};",
+									"",
+									"pm.test('Returned data', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.not.be.undefined;",
+									"})",
+									"",
+									"",
+									"pm.test('Data contains valid array of cards', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(tv4.validate(jsonData.data, schema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/transactions/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"transactions",
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "should fail (no package left)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/transactions/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"transactions",
+								"packages"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. Add new packages",
+			"item": [
+				{
+					"name": "package 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"Name\": \"WaterGoblin\",\n        \"Damage\": 10\n    },\n    {\n        \"Name\": \"RegularSpell\",\n        \"Damage\": 20\n    },\n    {\n        \"Name\": \"Knight\",\n        \"Damage\": 20\n    },\n    {\n        \"Name\": \"RegularSpell\",\n        \"Damage\": 45\n    },\n    {\n        \"Name\": \"FireElf\",\n        \"Damage\": 25\n    }\n\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"Name\": \"WaterGoblin\",\n        \"Damage\": 9\n    },\n    {\n        \"Name\": \"FireSpell\",\n        \"Damage\": 55\n    },\n    {\n        \"Name\": \"Knight\",\n        \"Damage\": 21\n    },\n    {\n        \"Name\": \"FireSpell\",\n        \"Damage\": 55\n    },\n    {\n        \"Name\": \"FireElf\",\n        \"Damage\": 23\n    }\n\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"Name\": \"WaterGoblin\",\n        \"Damage\": 11\n    },\n    {\n        \"Name\": \"Dragon\",\n        \"Damage\": 70\n    },\n    {\n        \"Name\": \"Knight\",\n        \"Damage\": 22\n    },\n    {\n        \"Name\": \"WaterSpell\",\n        \"Damage\": 40\n    },\n    {\n        \"Name\": \"FireElf\",\n        \"Damage\": 28\n    }\n\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"packages"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "7. Acquire newly created packages (altenhof)",
+			"item": [
+				{
+					"name": "acquire 1. package",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var cardSchema = {",
+									"    properties: {",
+									"        Name: {",
+									"            type: \"string\"",
+									"        },",
+									"        Damage: {",
+									"            type: \"number\"",
+									"        },",
+									"        Id: {",
+									"            type: \"string\"",
+									"        }",
+									"    },",
+									"    required: [\"Name\", \"Damage\", \"Id\"]",
+									"}",
+									"",
+									"var schema = {",
+									"    type: \"object\",",
+									"    properties: {",
+									"        Id: String,",
+									"        Cards: {",
+									"            type: \"array\",",
+									"            items: cardSchema",
+									"        }",
+									"    },",
+									"    required: [\"Id\", \"Cards\"]",
+									"};",
+									"",
+									"pm.test('Returned data', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.not.be.undefined;",
+									"})",
+									"",
+									"",
+									"pm.test('Data contains valid array of cards', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(tv4.validate(jsonData.data, schema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/transactions/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"transactions",
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "acquire 2. package",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var cardSchema = {",
+									"    properties: {",
+									"        Name: {",
+									"            type: \"string\"",
+									"        },",
+									"        Damage: {",
+									"            type: \"number\"",
+									"        },",
+									"        Id: {",
+									"            type: \"string\"",
+									"        }",
+									"    },",
+									"    required: [\"Name\", \"Damage\", \"Id\"]",
+									"}",
+									"",
+									"var schema = {",
+									"    type: \"object\",",
+									"    properties: {",
+									"        Id: String,",
+									"        Cards: {",
+									"            type: \"array\",",
+									"            items: cardSchema",
+									"        }",
+									"    },",
+									"    required: [\"Id\", \"Cards\"]",
+									"};",
+									"",
+									"pm.test('Returned data', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.not.be.undefined;",
+									"})",
+									"",
+									"",
+									"pm.test('Data contains valid array of cards', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(tv4.validate(jsonData.data, schema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/transactions/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"transactions",
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "should fail (no money)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/transactions/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"transactions",
+								"packages"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Show all acquired cards (admin)",
+			"item": [
+				{
+					"name": "should have no cards",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/cards",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"cards"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "8. Show all acquired cards (kienboec)",
+			"item": [
+				{
+					"name": "show cards",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var cardSchema = {",
+									"    properties: {",
+									"        Name: {",
+									"            type: \"string\"",
+									"        },",
+									"        Damage: {",
+									"            type: \"number\"",
+									"        },",
+									"        Id: {",
+									"            type: \"string\"",
+									"        }",
+									"    },",
+									"    required: [\"Name\", \"Damage\", \"Id\"]",
+									"}",
+									"",
+									"var schema = {",
+									"    type: \"array\",",
+									"    items: cardSchema",
+									"};",
+									"",
+									"pm.test('Returned data', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.not.be.undefined;",
+									"})",
+									"",
+									"",
+									"pm.test('Data contains valid array of cards', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(tv4.validate(jsonData.data, schema)).to.be.true;",
+									"});",
+									"",
+									"// Store ID's of 4 random cards in env variable for deck configuration",
+									"var cards = pm.response.json().data;",
+									"",
+									"var shuffledCards = cards.sort(() => Math.random() - 0.5);",
+									"",
+									"var take4Cards = shuffledCards.slice(0, 4);",
+									"var cardIds = take4Cards.map((card) => card.Id);",
+									"",
+									"pm.environment.set(\"cardIds_kienboec\", cardIds.join(\",\"));",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/cards",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"cards"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "should fail (no token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/cards",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"cards"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "9. Show all acquired cards (altenhof)",
+			"item": [
+				{
+					"name": "show cards",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var cardSchema = {",
+									"    properties: {",
+									"        Name: {",
+									"            type: \"string\"",
+									"        },",
+									"        Damage: {",
+									"            type: \"number\"",
+									"        },",
+									"        Id: {",
+									"            type: \"string\"",
+									"        }",
+									"    },",
+									"    required: [\"Name\", \"Damage\", \"Id\"]",
+									"}",
+									"",
+									"var schema = {",
+									"    type: \"array\",",
+									"    items: cardSchema",
+									"};",
+									"",
+									"pm.test('Returned data', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.not.be.undefined;",
+									"})",
+									"",
+									"",
+									"pm.test('Data contains valid array of cards', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(tv4.validate(jsonData.data, schema)).to.be.true;",
+									"});",
+									"",
+									"// Store ID's of 4 random cards in env variable for deck configuration",
+									"var cards = pm.response.json().data;",
+									"",
+									"var shuffledCards = cards.sort(() => Math.random() - 0.5);",
+									"",
+									"var take4Cards = shuffledCards.slice(0, 4);",
+									"var cardIds = take4Cards.map((card) => card.Id);",
+									"",
+									"pm.environment.set(\"cardIds_altenhof\", cardIds.join(\",\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/cards",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"cards"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "10. Show unconfigured Deck",
+			"item": [
+				{
+					"name": "should fail (no token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/deck",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"deck"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show deck (kienboec)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/deck",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"deck"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show deck (altenhof)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/deck",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"deck"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "11. Configure Deck",
+			"item": [
+				{
+					"name": "configure deck (kienboec)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const cardString = pm.variables.get(\"cardIds_kienboec\");",
+									"const bestCards = cardString.split(\",\");",
+									"",
+									"pm.request.body = JSON.stringify(bestCards);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/deck",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"deck"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "configure deck (altenhof)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const cardString = pm.variables.get(\"cardIds_altenhof\");",
+									"const bestCards = cardString.split(\",\");",
+									"",
+									"pm.request.body = JSON.stringify(bestCards);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/deck",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"deck"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "should fail (using altenhof's cards as kienboec)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const cardString = pm.variables.get(\"cardIds_altenhof\");",
+									"const bestCards = cardString.split(\",\");",
+									"",
+									"pm.request.body = JSON.stringify(bestCards);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/deck",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"deck"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "should fail (using kienboec's cards as altenhof)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const cardString = pm.variables.get(\"cardIds_kienboec\");",
+									"const bestCards = cardString.split(\",\");",
+									"",
+									"pm.request.body = JSON.stringify(bestCards);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/deck",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"deck"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "should fail (only 3 cards set)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const cardString = pm.variables.get(\"cardIds_kienboec\");",
+									"const bestCards = cardString.split(\",\");",
+									"",
+									"bestCards.pop();",
+									"",
+									"pm.request.body = JSON.stringify(bestCards);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/deck",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"deck"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "12. Show configured deck",
+			"item": [
+				{
+					"name": "show deck (kienboec)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"var cardSchema = {",
+									"    properties: {",
+									"        Name: {",
+									"            type: \"string\"",
+									"        },",
+									"        Damage: {",
+									"            type: \"number\"",
+									"        },",
+									"        Id: {",
+									"            type: \"string\"",
+									"        }",
+									"    },",
+									"    required: [\"Name\", \"Damage\", \"Id\"]",
+									"}",
+									"",
+									"const schema = {",
+									"    type: \"array\",",
+									"    items: cardSchema",
+									"}",
+									"",
+									"pm.test('Returned data', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.not.be.undefined;",
+									"})",
+									"",
+									"",
+									"pm.test('Data contains valid array of cards', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(tv4.validate(jsonData.data, schema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/deck",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"deck"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show deck (altenhof)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"var cardSchema = {",
+									"    properties: {",
+									"        Name: {",
+									"            type: \"string\"",
+									"        },",
+									"        Damage: {",
+									"            type: \"number\"",
+									"        },",
+									"        Id: {",
+									"            type: \"string\"",
+									"        }",
+									"    },",
+									"    required: [\"Name\", \"Damage\", \"Id\"]",
+									"}",
+									"",
+									"const schema = {",
+									"    type: \"array\",",
+									"    items: cardSchema",
+									"}",
+									"",
+									"pm.test('Returned data', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.not.be.undefined;",
+									"})",
+									"",
+									"",
+									"pm.test('Data contains valid array of cards', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(tv4.validate(jsonData.data, schema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/deck",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"deck"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "13. Show configured deck (different representation)",
+			"item": [
+				{
+					"name": "show deck (kienboec)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is text/plain\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\", \"text/plain\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/deck?format=plain",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"deck"
+							],
+							"query": [
+								{
+									"key": "format",
+									"value": "plain"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show deck (altenhof)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is text/plain\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\", \"text/plain\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/deck?format=plain",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"deck"
+							],
+							"query": [
+								{
+									"key": "format",
+									"value": "plain"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "14. Edit user data",
+			"item": [
+				{
+					"name": "show user data (kienboec)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.not.be.undefined;",
+									"});",
+									"",
+									"var schema = {",
+									"    type: \"object\",",
+									"    properties: {",
+									"        \"Id\": {",
+									"            type: \"string\"",
+									"        },",
+									"        \"Username\": {",
+									"            type: \"string\"",
+									"        },",
+									"        \"Name\": {",
+									"            type: \"string\"",
+									"        },",
+									"        \"Bio\": {",
+									"            type: \"string\"",
+									"        },",
+									"        \"Image\": {",
+									"            type: \"string\"",
+									"        }",
+									"    },",
+									"    required: [\"Id\",\"Username\", \"Name\", \"Bio\", \"Image\"]",
+									"};",
+									"",
+									"",
+									"pm.test('Schema is valid', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(tv4.validate(jsonData.data, schema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/users/kienboec",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"users",
+								"kienboec"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show user data (altenhof)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.not.be.undefined;",
+									"});",
+									"",
+									"var schema = {",
+									"    type: \"object\",",
+									"    properties: {",
+									"        \"Id\": {",
+									"            type: \"string\"",
+									"        },",
+									"        \"Username\": {",
+									"            type: \"string\"",
+									"        },",
+									"        \"Name\": {",
+									"            type: \"string\"",
+									"        },",
+									"        \"Bio\": {",
+									"            type: \"string\"",
+									"        },",
+									"        \"Image\": {",
+									"            type: \"string\"",
+									"        }",
+									"    },",
+									"    required: [\"Id\", \"Username\", \"Name\", \"Bio\", \"Image\"]",
+									"};",
+									"",
+									"",
+									"pm.test('Schema is valid', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(tv4.validate(jsonData.data, schema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/users/altenhof",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"users",
+								"altenhof"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "edit user data (kienboec)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Data contains expected updates\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.Name).to.eql(\"Kienboeck\");",
+									"    pm.expect(jsonData.data.Bio).to.eql(\"me playin...\");",
+									"    pm.expect(jsonData.data.Image).to.eql(\":-)\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Name\": \"Kienboeck\",\n    \"Bio\": \"me playin...\",\n    \"Image\": \":-)\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/users/kienboec",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"users",
+								"kienboec"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "edit user data (altenhof)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Data contains expected updates\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.Name).to.eql(\"Altenhofer\");",
+									"    pm.expect(jsonData.data.Bio).to.eql(\"me codin...\");",
+									"    pm.expect(jsonData.data.Image).to.eql(\":-D\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Name\": \"Altenhofer\",\n    \"Bio\": \"me codin...\",\n    \"Image\": \":-D\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/users/altenhof",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"users",
+								"altenhof"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show updated user data (kienboec)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.not.be.undefined;",
+									"});",
+									"",
+									"var schema = {",
+									"    type: \"object\",",
+									"    properties: {",
+									"        \"Id\": {",
+									"            type: \"string\"",
+									"        },",
+									"        \"Username\": {",
+									"            type: \"string\"",
+									"        },",
+									"        \"Name\": {",
+									"            type: \"string\"",
+									"        },",
+									"        \"Bio\": {",
+									"            type: \"string\"",
+									"        },",
+									"        \"Image\": {",
+									"            type: \"string\"",
+									"        }",
+									"    },",
+									"    required: [\"Id\",\"Username\", \"Name\", \"Bio\", \"Image\"]",
+									"};",
+									"",
+									"",
+									"pm.test('Schema is valid', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(tv4.validate(jsonData.data, schema)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Data contains expected updates\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.Name).to.eql(\"Kienboeck\");",
+									"    pm.expect(jsonData.data.Bio).to.eql(\"me playin...\");",
+									"    pm.expect(jsonData.data.Image).to.eql(\":-)\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/users/kienboec",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"users",
+								"kienboec"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show updated user data (altenhof)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.not.be.undefined;",
+									"});",
+									"",
+									"var schema = {",
+									"    type: \"object\",",
+									"    properties: {",
+									"        \"Id\": {",
+									"            type: \"string\"",
+									"        },",
+									"        \"Username\": {",
+									"            type: \"string\"",
+									"        },",
+									"        \"Name\": {",
+									"            type: \"string\"",
+									"        },",
+									"        \"Bio\": {",
+									"            type: \"string\"",
+									"        },",
+									"        \"Image\": {",
+									"            type: \"string\"",
+									"        }",
+									"    },",
+									"    required: [\"Id\",\"Username\", \"Name\", \"Bio\", \"Image\"]",
+									"};",
+									"",
+									"",
+									"pm.test('Schema is valid', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(tv4.validate(jsonData.data, schema)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Data contains expected updates\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.Name).to.eql(\"Altenhofer\");",
+									"    pm.expect(jsonData.data.Bio).to.eql(\"me codin...\");",
+									"    pm.expect(jsonData.data.Image).to.eql(\":-D\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/users/altenhof",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"users",
+								"altenhof"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "should fail (token mismatch)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/users/altenhof",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"users",
+								"altenhof"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "should fail (token mismatch)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/users/kienboec",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"users",
+								"kienboec"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "should fail (token mismatch)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Name\": \"Hoax\",\n    \"Bio\": \"me playin...\",\n    \"Image\": \":-)\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/users/kienboec",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"users",
+								"kienboec"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "should fail (token mismatch)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Name\": \"Hoax\",\n    \"Bio\": \"me codin...\",\n    \"Image\": \":-D\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10001/users/altenhof",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"users",
+								"altenhof"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "should fail (user does not exist)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/users/someGuy",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"users",
+								"someGuy"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "15. Stats",
+			"item": [
+				{
+					"name": "show stats (kienboec)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Stats are equal to default values\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.Elo).to.eql(1500);",
+									"    pm.expect(jsonData.data.Wins).to.eql(0);",
+									"    pm.expect(jsonData.data.Losses).to.eql(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/stats",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show stats (altenhof)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Stats are equal to default values\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.Elo).to.eql(1500);",
+									"    pm.expect(jsonData.data.Wins).to.eql(0);",
+									"    pm.expect(jsonData.data.Losses).to.eql(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/stats",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"stats"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "16. Scoreboard",
+			"item": [
+				{
+					"name": "show scoreboard",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/scoreboard",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"scoreboard"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "17. Battle",
+			"item": [
+				{
+					"name": "Start Battle",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var request = {",
+									"    async: false,",
+									"    method: \"POST\",",
+									"    url: \"http://localhost:10001/battles\"",
+									"}",
+									"",
+									"var altenhof_token = pm.environment.get(\"token_altenhof\");",
+									"var kienboec_token = pm.environment.get(\"token_kienboec\");",
+									"",
+									"var altenhof_request = {...request, header: {\"Authorization\": `Bearer ${altenhof_token}`}};",
+									"var kienboec_request = {...request, header: {\"Authorization\": `Bearer ${kienboec_token}`}};",
+									"",
+									"// both requests return the battle_id, so we just store battle_id from altenhof_request.",
+									"pm.sendRequest(altenhof_request, (err, res) => {",
+									"    var battleId = res.json().data.battleId;",
+									"    pm.environment.set(\"battle_id\", battleId);",
+									"});",
+									"pm.sendRequest(kienboec_request);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/battles/{{battle_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"battles",
+								"{{battle_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Battle Result",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains log\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.log).to.exist;",
+									"",
+									"    // store winnerId as var for further tests",
+									"    pm.environment.set(\"winnerId\", jsonData.log.winnerId);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/battles/{{battle_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"battles",
+								"{{battle_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "18. Stats",
+			"item": [
+				{
+					"name": "show stats (kienboec)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Stats match to win / loss / draw\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var winnerId = pm.environment.get(\"winnerId\");",
+									"",
+									"    switch(winnerId) {",
+									"        case pm.environment.get(\"id_kienboec\"):",
+									"            pm.expect(jsonData.data.Wins).to.eql(1);",
+									"            pm.expect(jsonData.data.Losses).to.eql(0);",
+									"            pm.expect(jsonData.data.Elo).to.eql(1507);",
+									"            break;",
+									"        ",
+									"        case pm.environment.get(\"id_altenhof\"):",
+									"            pm.expect(jsonData.data.Wins).to.eql(0);",
+									"            pm.expect(jsonData.data.Losses).to.eql(1);",
+									"            pm.expect(jsonData.data.Elo).to.eql(1492);",
+									"            break;",
+									"",
+									"        case null:",
+									"            pm.expect(jsonData.data.Wins).to.eql(0);",
+									"            pm.expect(jsonData.data.Losses).to.eql(0);",
+									"            pm.expect(jsonData.data.Elo).to.eql(1500);",
+									"            break;",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/stats",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show stats (altenhof)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Stats match to win / loss / draw\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    ",
+									"    var winnerId = pm.environment.get(\"winnerId\");",
+									"",
+									"    switch(winnerId) {",
+									"        case pm.environment.get(\"id_altenhof\"):",
+									"            pm.expect(jsonData.data.Wins).to.eql(1);",
+									"            pm.expect(jsonData.data.Losses).to.eql(0);",
+									"            pm.expect(jsonData.data.Elo).to.eql(1507);",
+									"            break;",
+									"        ",
+									"        case pm.environment.get(\"id_kienboec\"):",
+									"            pm.expect(jsonData.data.Wins).to.eql(0);",
+									"            pm.expect(jsonData.data.Losses).to.eql(1);",
+									"            pm.expect(jsonData.data.Elo).to.eql(1492);",
+									"",
+									"            break;",
+									"",
+									"        case null:",
+									"            pm.expect(jsonData.data.Wins).to.eql(0);",
+									"            pm.expect(jsonData.data.Losses).to.eql(0);",
+									"            pm.expect(jsonData.data.Elo).to.eql(1500);",
+									"            break;",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/stats",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"stats"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "19. Scoreboard",
+			"item": [
+				{
+					"name": "show scoreboard",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/scoreboard",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"scoreboard"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "20. Create / Delete Trade offer",
+			"item": [
+				{
+					"name": "check trading deals",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"pm.test(\"Data is empty array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.be.empty;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/tradings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"tradings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create trading deal (kienboec)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// fetch a card that would be tradeable",
+									"",
+									"var kienboec_token = pm.environment.get(\"token_kienboec\");",
+									"",
+									"pm.sendRequest({url: \"http://localhost:10001/tradeableCards\", header: {\"Authorization\": `Bearer ${kienboec_token}`}}, (err, res) => {",
+									"    var response = res.json();",
+									"    var cardToTradeId = response.data.find((card) => card.Damage >= 15).Id;",
+									"",
+									"    pm.environment.set(\"cardToTrade_kienboec\", cardToTradeId);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"CardToTrade\": \"{{cardToTrade_kienboec}}\",\n    \"Type\": \"monster\",\n    \"MinimumDamage\": 15\n}"
+						},
+						"url": {
+							"raw": "http://localhost:10001/tradings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"tradings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "check trading deals (trade should show)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Data has trade\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.length).to.eql(1);",
+									"",
+									"    pm.environment.set(\"tradeId_kienboec\", jsonData.data[0].Id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/tradings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"tradings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete trading deal",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/tradings/{{tradeId_kienboec}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"tradings",
+								"{{tradeId_kienboec}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "21. Carry out trade",
+			"item": [
+				{
+					"name": "check trading deals",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"pm.test(\"Data is empty array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.be.empty;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/tradings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"tradings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create trading deal (kienboec)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// fetch a card that would be tradeable",
+									"",
+									"var kienboec_token = pm.environment.get(\"token_kienboec\");",
+									"",
+									"pm.sendRequest({url: \"http://localhost:10001/tradeableCards\", header: {\"Authorization\": `Bearer ${kienboec_token}`}}, (err, res) => {",
+									"    var response = res.json();",
+									"    var cardToTradeId = response.data.find((card) => card.Damage >= 15).Id;",
+									"",
+									"    pm.environment.set(\"cardToTrade_kienboec\", cardToTradeId);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"CardToTrade\": \"{{cardToTrade_kienboec}}\",\n    \"Type\": \"monster\",\n    \"MinimumDamage\": 15\n}"
+						},
+						"url": {
+							"raw": "http://localhost:10001/tradings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"tradings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "check trading deals (trade should show)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Data has trade\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.length).to.eql(1);",
+									"",
+									"    pm.environment.set(\"tradeId_kienboec\", jsonData.data[0].Id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/tradings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"tradings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "try to trade with yourself",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{cardToTrade_kienboec}}"
+						},
+						"url": {
+							"raw": "http://localhost:10001/tradings/{{tradeId_kienboec}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"tradings",
+								"{{tradeId_kienboec}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "try to trade with card that doesn't match criteria",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var altenhof_token = pm.environment.get(\"token_altenhof\");",
+									"",
+									"pm.sendRequest({url: \"http://localhost:10001/tradeableCards\", header: {\"Authorization\": `Bearer ${altenhof_token}`}}, (err, res) => {",
+									"    var response = res.json();",
+									"    var cardToTradeId = response.data.find((card) => card.Damage < 15 || card.Name.includes(\"Spell\")).Id;",
+									"",
+									"    pm.environment.set(\"cardToTrade_altenhof\", cardToTradeId);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{cardToTrade_altenhof}}"
+						},
+						"url": {
+							"raw": "http://localhost:10001/tradings/{{tradeId_kienboec}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"tradings",
+								"{{tradeId_kienboec}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "carry out trade",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var altenhof_token = pm.environment.get(\"token_altenhof\");",
+									"",
+									"pm.sendRequest({url: \"http://localhost:10001/tradeableCards\", header: {\"Authorization\": `Bearer ${altenhof_token}`}}, (err, res) => {",
+									"    var response = res.json();",
+									"    var cardToTradeId = response.data.find((card) => card.Damage >= 15 && !card.Name.includes(\"Spell\")).Id;",
+									"",
+									"    pm.environment.set(\"cardToTrade_altenhof\", cardToTradeId);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{cardToTrade_altenhof}}"
+						},
+						"url": {
+							"raw": "http://localhost:10001/tradings/{{tradeId_kienboec}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"tradings",
+								"{{tradeId_kienboec}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "check trading deals",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"pm.test(\"Data is empty array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.be.empty;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/tradings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"tradings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "kienboec owns altenhof's former card",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Includes former altenhof's card\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var altenhof_card = pm.environment.get(\"cardToTrade_altenhof\")",
+									"    pm.expect(jsonData.data.find((card) => card.Id == altenhof_card)).to.not.be.undefined;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_kienboec}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/cards",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"cards"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "altenhof owns kienboec's former card",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Includes former altenhof's card\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var kienboec_card = pm.environment.get(\"cardToTrade_kienboec\")",
+									"    pm.expect(jsonData.data.find((card) => card.Id == kienboec_card)).to.not.be.undefined;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/cards",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"cards"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
