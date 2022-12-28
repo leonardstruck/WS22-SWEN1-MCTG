@@ -120,6 +120,18 @@ public static class CardRepository
         return cards.ToArray();
     }
 
+    public static async Task<Guid?> GetCardOwner(Guid cardId)
+    {
+        await using var db = Connection.GetDataSource();
+        await using var command = db.CreateCommand("SELECT owner_id FROM card WHERE id = @id");
+        command.Parameters.AddWithValue("id", cardId);
+        
+        if(await command.ExecuteScalarAsync() is not Guid ownerId)
+            return null;
+        
+        return ownerId;
+    }
+
     public static async Task<bool> PutCardsInDeck(Guid ownerId, Guid[] cardIds)
     {
         await using var db = Connection.GetDataSource();
