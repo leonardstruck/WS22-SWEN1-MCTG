@@ -1,7 +1,5 @@
-using System.Text.Json.Serialization;
 using GameLogic;
 using Models;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NpgsqlTypes;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -10,7 +8,7 @@ namespace DataLayer;
 
 public class BattleRepository
 {
-    private static readonly SemaphoreSlim _semaphore = new(1, 1);
+    private static readonly SemaphoreSlim Semaphore = new(1, 1);
     public static async Task<Stats?> GetStatsByUserId(Guid userId)
     {
         await using var db = Connection.GetDataSource();
@@ -101,7 +99,7 @@ public class BattleRepository
 
     public static async Task<Tuple<Guid, bool>> CheckIfBattleExists(Guid opponent1, Guid opponent2)
     {
-        await _semaphore.WaitAsync();
+        await Semaphore.WaitAsync();
         await using var db = Connection.GetDataSource();
         
         // check if a battle exists with the given opponents where timestamp is null
@@ -118,7 +116,7 @@ public class BattleRepository
         // if there is a battle with the given opponents, return true
         if (battleId != null)
         {
-            _semaphore.Release();
+            Semaphore.Release();
             return new Tuple<Guid, bool>((Guid)battleId, true);
         }
     
@@ -128,13 +126,13 @@ public class BattleRepository
         cmd2.Parameters.AddWithValue("opponent2", NpgsqlDbType.Uuid, opponent2);
 
         battleId = (Guid)((await cmd2.ExecuteScalarAsync()) ?? throw new Exception("Failed to create battle"));
-        _semaphore.Release();
+        Semaphore.Release();
         return new Tuple<Guid, bool>((Guid)battleId, false);
     }
 
     public static async Task ConcludeBattle(Guid battle, JObject log)
     {
-        await _semaphore.WaitAsync();
+        await Semaphore.WaitAsync();
 
         // set timestamp to current time
         await using var db = Connection.GetDataSource();
@@ -144,7 +142,7 @@ public class BattleRepository
         cmd.Parameters.AddWithValue("log", NpgsqlDbType.Jsonb, log.ToString());
         
         await cmd.ExecuteNonQueryAsync();
-        _semaphore.Release();
+        Semaphore.Release();
     }
 
     public static async Task<bool> IsUserParticipantInBattle(Guid battleId, Guid userId)
@@ -186,7 +184,7 @@ public class BattleRepository
     {
         await using var db = Connection.GetDataSource();
 
-        await _semaphore.WaitAsync();
+        await Semaphore.WaitAsync();
         // GET ELO OF BOTH USERS
         await using var cmd = db.CreateCommand("SELECT elo FROM \"user\" WHERE id = @user_id LIMIT 1");
         cmd.Parameters.AddWithValue("user_id", NpgsqlDbType.Uuid, userId);
@@ -205,10 +203,10 @@ public class BattleRepository
         var opponentElo = new Elo(reader2.GetInt32(0));
         
         // CALCULATE NEW ELO
-        double userScore = winnerId == userId ? Elo.WIN : winnerId == opponentId ? Elo.LOSS : Elo.DRAW;
+        double userScore = winnerId == userId ? Elo.Win : winnerId == opponentId ? Elo.Loss : Elo.Draw;
         userElo.UpdateScore(opponentElo, userScore);
         
-        double opponentScore = winnerId == opponentId ? Elo.WIN : winnerId == userId ? Elo.LOSS : Elo.DRAW;
+        double opponentScore = winnerId == opponentId ? Elo.Win : winnerId == userId ? Elo.Loss : Elo.Draw;
         opponentElo.UpdateScore(userElo, opponentScore);
         
         // UPDATE ELO IN DATABASE AND STORE WIN / LOSS
@@ -229,6 +227,6 @@ public class BattleRepository
         await cmd4.ExecuteNonQueryAsync();
         
         
-        _semaphore.Release();
+        Semaphore.Release();
     }
 }

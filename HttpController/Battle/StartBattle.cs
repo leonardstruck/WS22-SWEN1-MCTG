@@ -83,8 +83,8 @@ public class StartBattle : IEndpointController
         }
         
         // update card ownership and remove them from deck
-        await CardRepository.UpdateDeck(userId, battle.GetDeck1().Select(x => (Guid)x.Id).ToArray());
-        await CardRepository.UpdateDeck(opponentId, battle.GetDeck2().Select(x => (Guid)x.Id).ToArray());
+        await CardRepository.UpdateDeck(userId, battle.GetDeck1().Select(x => x.Id).ToArray());
+        await CardRepository.UpdateDeck(opponentId, battle.GetDeck2().Select(x => x.Id).ToArray());
 
         Console.WriteLine($"Battle between {userId} and {opponentId} finished. Winner: {winnerId}");
 

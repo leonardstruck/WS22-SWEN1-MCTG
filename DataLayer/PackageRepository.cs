@@ -1,4 +1,5 @@
 using Models;
+using Models.Card;
 
 namespace DataLayer;
 

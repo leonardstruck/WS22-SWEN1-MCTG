@@ -1,3 +1,5 @@
+using Models.Card;
+
 namespace Models;
 
 public class Package

@@ -10,7 +10,7 @@ public class MustBePlayerInBattle : IMiddleware
     public async Task<HttpContext> HandleRequest(HttpContext ctx)
     {
         // Get the player from the context
-        var user = ctx.Data["user"] as User ?? throw new Exception("No user found in context");;
+        var user = ctx.Data["user"] as User ?? throw new Exception("No user found in context");
         
         // If user is admin skip the check
         if (user.Username == "admin") return ctx;

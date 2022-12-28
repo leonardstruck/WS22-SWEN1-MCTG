@@ -1,6 +1,6 @@
 using DataLayer;
 using HttpServer;
-using Models;
+using Models.Card;
 using HttpMethod = HttpServer.HttpMethod;
 
 namespace HttpController.Packages;

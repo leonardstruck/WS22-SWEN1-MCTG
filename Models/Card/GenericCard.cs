@@ -1,8 +1,7 @@
 using System.Reflection;
-using Models.Card;
 using Models.Card.Spells;
 
-namespace Models;
+namespace Models.Card;
 
 public class GenericCard
 {

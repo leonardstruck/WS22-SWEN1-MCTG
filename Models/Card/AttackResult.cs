@@ -1,4 +1,4 @@
-namespace Models;
+namespace Models.Card;
 
 public struct AttackResult
 {
