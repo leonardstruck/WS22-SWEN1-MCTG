@@ -47,7 +47,7 @@ public static class CardRepository
     {
         await using var db = Connection.GetDataSource();
         
-        await using var command = db.CreateCommand("SELECT id, name, damage FROM card WHERE owner_id = @owner_id AND  \"inDeck\" IS TRUE");
+        await using var command = db.CreateCommand("SELECT id, name, damage FROM card WHERE owner_id = @owner_id AND  \"inDeck\" IS TRUE AND \"tradeLock\" IS FALSE");
         command.Parameters.AddWithValue("owner_id", ownerId);
         
         await using var reader = await command.ExecuteReaderAsync();
@@ -75,8 +75,8 @@ public static class CardRepository
         if(cardIds.Length != 4)
             return false;
         
-        // check if all cards belong to the user
-        await using var countOwnedCommand = db.CreateCommand("SELECT COUNT(*) FROM card WHERE owner_id = @owner_id AND id = ANY(@card_ids)");
+        // check if all cards belong to the user and are not locked because they are traded
+        await using var countOwnedCommand = db.CreateCommand("SELECT COUNT(*) FROM card WHERE owner_id = @owner_id AND id = ANY(@card_ids) AND \"tradeLock\" IS FALSE");
         countOwnedCommand.Parameters.AddWithValue("owner_id", ownerId);
         countOwnedCommand.Parameters.AddWithValue("card_ids", cardIds);
         
@@ -104,7 +104,7 @@ public static class CardRepository
         await using var db = Connection.GetDataSource();
         
         // set owner id for every card
-        await using var command = db.CreateCommand("UPDATE card SET owner_id = @owner_id, \"inDeck\" = false WHERE id = ANY(@card_ids)");
+        await using var command = db.CreateCommand("UPDATE card SET owner_id = @owner_id, \"inDeck\" = false WHERE id = ANY(@card_ids) AND \"tradeLock\" IS FALSE");
         command.Parameters.AddWithValue("owner_id", ownerId);
         command.Parameters.AddWithValue("card_ids", cardIds);
 

@@ -54,18 +54,21 @@ create table package
 
 create table card
 (
-    id         uuid    default gen_random_uuid() not null
+    id          uuid    default gen_random_uuid() not null
         constraint card_pk
             primary key,
-    package_id uuid                              not null
+    package_id  uuid                              not null
         constraint card_package_fk
             references package,
-    name       varchar,
-    damage     numeric,
-    owner_id   uuid
+    name        varchar,
+    damage      numeric,
+    owner_id    uuid
         constraint card_user_id_fk
             references "user",
-    "inDeck"   boolean default false             not null
+    "inDeck"    boolean default false             not null,
+    "tradeLock" boolean default false             not null,
+    constraint "check_inDeck_notTradeable"
+        check ((("inDeck" IS TRUE) AND ("tradeLock" IS FALSE)) OR ("inDeck" IS FALSE))
 );
 
 create table session
