@@ -180,4 +180,23 @@ public class BattleRepository
             log = reader.IsDBNull(3) ? null : JsonSerializer.Deserialize<object?>(reader.GetString(3))
         };
     }
+    
+    public static async Task UpdateStats(Guid winner, Guid loser)
+    {
+        await _semaphore.WaitAsync();
+        await using var db = Connection.GetDataSource();
+        
+        await using var cmd = db.CreateCommand("UPDATE \"user\" SET wins = wins + 1 WHERE id = @winner_id");
+        cmd.Parameters.AddWithValue("winner_id", NpgsqlDbType.Uuid, winner);
+        
+        await cmd.ExecuteNonQueryAsync();
+        
+        await using var cmd2 = db.CreateCommand("UPDATE \"user\" SET losses = losses + 1 WHERE id = @loser_id");
+        cmd2.Parameters.AddWithValue("loser_id", NpgsqlDbType.Uuid, loser);
+        
+        // TODO: CALCULATE ELO
+        
+        await cmd2.ExecuteNonQueryAsync();
+        _semaphore.Release();
+    }
 }

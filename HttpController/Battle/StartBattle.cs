@@ -72,16 +72,16 @@ public class StartBattle : IEndpointController
         var winner = battle.Play();
         
         Guid? winnerId = null;
+        Guid? loserId = null;
         switch (winner)
         {
-            case Winner.Draw:
-                winnerId = null;
-                break;
             case Winner.Player1:
                 winnerId = userId;
+                loserId = opponentId;
                 break;
             case Winner.Player2:
                 winnerId = opponentId;
+                loserId = userId;
                 break;
         }
         
@@ -104,6 +104,13 @@ public class StartBattle : IEndpointController
 
         // save battle
         await BattleRepository.ConcludeBattle(battleId, logJson);
+        
+        // update stats if there is a winner
+        if (winnerId != null && loserId != null)
+        {
+            await BattleRepository.UpdateStats((Guid)winnerId, (Guid)loserId);
+        }
+        
         return ctx;
     }
 }
