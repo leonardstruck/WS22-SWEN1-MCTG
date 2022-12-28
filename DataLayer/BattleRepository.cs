@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using GameLogic;
 using Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -180,23 +181,54 @@ public class BattleRepository
             log = reader.IsDBNull(3) ? null : JsonSerializer.Deserialize<object?>(reader.GetString(3))
         };
     }
-    
-    public static async Task UpdateStats(Guid winner, Guid loser)
+
+    public static async Task UpdateStats(Guid userId, Guid opponentId, Guid? winnerId) 
     {
-        await _semaphore.WaitAsync();
         await using var db = Connection.GetDataSource();
+
+        await _semaphore.WaitAsync();
+        // GET ELO OF BOTH USERS
+        await using var cmd = db.CreateCommand("SELECT elo FROM \"user\" WHERE id = @user_id LIMIT 1");
+        cmd.Parameters.AddWithValue("user_id", NpgsqlDbType.Uuid, userId);
         
-        await using var cmd = db.CreateCommand("UPDATE \"user\" SET wins = wins + 1 WHERE id = @winner_id");
-        cmd.Parameters.AddWithValue("winner_id", NpgsqlDbType.Uuid, winner);
+        await using var reader = await cmd.ExecuteReaderAsync();
+        await reader.ReadAsync();
         
-        await cmd.ExecuteNonQueryAsync();
+        var userElo = new Elo(reader.GetInt32(0));
         
-        await using var cmd2 = db.CreateCommand("UPDATE \"user\" SET losses = losses + 1 WHERE id = @loser_id");
-        cmd2.Parameters.AddWithValue("loser_id", NpgsqlDbType.Uuid, loser);
+        await using var cmd2 = db.CreateCommand("SELECT elo FROM \"user\" WHERE id = @user_id LIMIT 1");
+        cmd2.Parameters.AddWithValue("user_id", NpgsqlDbType.Uuid, opponentId);
         
-        // TODO: CALCULATE ELO
+        await using var reader2 = await cmd2.ExecuteReaderAsync();
+        await reader2.ReadAsync();
         
-        await cmd2.ExecuteNonQueryAsync();
+        var opponentElo = new Elo(reader2.GetInt32(0));
+        
+        // CALCULATE NEW ELO
+        double userScore = winnerId == userId ? Elo.WIN : winnerId == opponentId ? Elo.LOSS : Elo.DRAW;
+        userElo.UpdateScore(opponentElo, userScore);
+        
+        double opponentScore = winnerId == opponentId ? Elo.WIN : winnerId == userId ? Elo.LOSS : Elo.DRAW;
+        opponentElo.UpdateScore(userElo, opponentScore);
+        
+        // UPDATE ELO IN DATABASE AND STORE WIN / LOSS
+        await using var cmd3 = db.CreateCommand("UPDATE \"user\" SET elo = @elo, wins = wins + @wins, losses = losses + @losses WHERE id = @user_id");
+        cmd3.Parameters.AddWithValue("elo", NpgsqlDbType.Integer, userElo.Rating);
+        cmd3.Parameters.AddWithValue("wins", NpgsqlDbType.Integer, winnerId == userId ? 1 : 0);
+        cmd3.Parameters.AddWithValue("losses", NpgsqlDbType.Integer, winnerId == opponentId ? 1 : 0);
+        cmd3.Parameters.AddWithValue("user_id", NpgsqlDbType.Uuid, userId);
+        
+        await cmd3.ExecuteNonQueryAsync();
+        
+        await using var cmd4 = db.CreateCommand("UPDATE \"user\" SET elo = @elo, wins = wins + @wins, losses = losses + @losses WHERE id = @user_id");
+        cmd4.Parameters.AddWithValue("elo", NpgsqlDbType.Integer, opponentElo.Rating);
+        cmd4.Parameters.AddWithValue("wins", NpgsqlDbType.Integer, winnerId == opponentId ? 1 : 0);
+        cmd4.Parameters.AddWithValue("losses", NpgsqlDbType.Integer, winnerId == userId ? 1 : 0);
+        cmd4.Parameters.AddWithValue("user_id", NpgsqlDbType.Uuid, opponentId);
+        
+        await cmd4.ExecuteNonQueryAsync();
+        
+        
         _semaphore.Release();
     }
 }

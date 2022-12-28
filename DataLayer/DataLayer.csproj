@@ -19,6 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\GameLogic\GameLogic.csproj" />
       <ProjectReference Include="..\Models\Models.csproj" />
     </ItemGroup>
 
