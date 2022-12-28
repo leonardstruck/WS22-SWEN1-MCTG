@@ -19,6 +19,20 @@ public static class CardRepository
         return id;
     }
 
+    public static async Task<GenericCard?> GetCardById(Guid cardId)
+    {
+        await using var db = Connection.GetDataSource();
+        
+        await using var cmd = db.CreateCommand("SELECT name, damage FROM card WHERE id = @id");
+        cmd.Parameters.AddWithValue("id", cardId);
+        
+        await using var reader = await cmd.ExecuteReaderAsync();
+        if(!await reader.ReadAsync())
+            return null;
+
+        return new GenericCard(reader.GetString(0), reader.GetInt32(1), cardId);
+    }
+
     public static async Task<GenericCard[]> GetCardsByOwner(Guid ownerId)
     {
         await using var db = Connection.GetDataSource();
