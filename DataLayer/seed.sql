@@ -1,10 +1,12 @@
+drop table if exists battle;
+
+drop table if exists session;
+
+drop table if exists trading;
+
 drop table if exists card;
 
 drop table if exists package;
-
-drop table if exists "session";
-
-drop table if exists "battle";
 
 drop table if exists "user";
 
@@ -83,5 +85,17 @@ create table session
     user_id uuid                                not null
         constraint session_user_id_fk
             references "user"
+);
+
+create table trading
+(
+    id          uuid default gen_random_uuid() not null
+        constraint trading_pk
+            primary key,
+    card_id     uuid                           not null
+        constraint trading_card_fk
+            references card,
+    "minDamage" integer                        not null,
+    type        varchar                        not null
 );
 
