@@ -15,6 +15,11 @@ public class Elo
         Rating = rating;
     }
 
+    public Elo()
+    {
+        Rating = 1500;
+    }
+
     public double GetExpectedScore(Elo opponent)
     {
         return 1 / (1 + Math.Pow(10, ((double)opponent.Rating - Rating) / 400));
