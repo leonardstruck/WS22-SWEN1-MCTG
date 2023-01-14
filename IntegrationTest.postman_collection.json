@@ -4534,6 +4534,95 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "UNIQUE FEATURE",
+			"item": [
+				{
+					"name": "get daily reward",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/dailyReward",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"dailyReward"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "should fail (already collected reward)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_altenhof}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10001/dailyReward",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"dailyReward"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [

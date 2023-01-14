@@ -13,19 +13,20 @@ drop table if exists "user";
 
 create table "user"
 (
-    id          uuid    default gen_random_uuid() not null
+    id               uuid    default gen_random_uuid() not null
         constraint user_pk
             primary key,
-    username    varchar,
-    password    varchar,
-    coins       integer,
-    name        varchar,
-    bio         varchar,
-    image       varchar,
-    elo         integer default 1500              not null,
-    wins        integer default 0                 not null,
-    losses      integer default 0                 not null,
-    lobby_entry timestamp
+    username         varchar,
+    password         varchar,
+    coins            integer,
+    name             varchar,
+    bio              varchar,
+    image            varchar,
+    elo              integer default 1500              not null,
+    wins             integer default 0                 not null,
+    losses           integer default 0                 not null,
+    lobby_entry      timestamp,
+    reward_timestamp timestamp
 );
 
 create table battle

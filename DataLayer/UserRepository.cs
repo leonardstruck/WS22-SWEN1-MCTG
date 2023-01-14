@@ -177,4 +177,18 @@ public static class UserRepository
         
         await cmd.ExecuteNonQueryAsync();
     }
+
+    public static async Task<bool> CollectDailyReward(Guid userId)
+    {
+        // try to add 10 coins to user only if they haven't collected today
+        await using var db = Connection.GetDataSource();
+        
+        await using var cmd = db.CreateCommand("UPDATE \"user\" " +
+                                               "SET coins = coins + 10, reward_timestamp = now() " +
+                                               "WHERE id = @id AND (reward_timestamp < now()::date OR reward_timestamp IS NULL)");
+        
+        cmd.Parameters.AddWithValue("id", NpgsqlDbType.Uuid, userId);
+        
+        return await cmd.ExecuteNonQueryAsync() == 1;
+    }
 }
