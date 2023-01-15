@@ -2,7 +2,7 @@ using Models.Card;
 using Models.Card.Monsters;
 using Models.Card.Spells;
 
-namespace Test.GameLogic;
+namespace Test.GameLogic.BattleRounds;
 
 [TestFixture]
 public class SpecialtyTest
